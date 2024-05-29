@@ -1,51 +1,28 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
+	"time"
+
+	"github.com/rpstvs/steamscraper-go/internals/steamapi"
 )
 
-type Client struct {
-	httpClient http.Client
+type config struct {
+	steamApiClient steamapi.Client
 }
 
 func main() {
 
-	url := "https://steamcommunity.com/market/search/render/?query=&start=0&norender=1&count=2&search_descriptions=0&sort_column=popular&sort_dir=desc&appid=730"
+	steamClient := steamapi.NewClient(5 * time.Second)
 
-	steamClient := &Client{
-		httpClient: http.Client{},
+	cfg := &config{
+		steamApiClient: steamClient,
 	}
 
-	req, err := http.NewRequest("GET", url, nil)
+	Resultados := cfg.steamApiClient.GetSkins()
 
-	if err != nil {
-		fmt.Printf("error occurred: %s", err)
-		return
+	for _, resultado := range Resultados.Results {
+		fmt.Println(resultado.HashName, resultado.SellPriceText)
 	}
-
-	resp, err := steamClient.httpClient.Do(req)
-
-	if err != nil {
-		fmt.Printf("error occyrred: %s", err)
-		return
-	}
-
-	defer resp.Body.Close()
-
-	dat, err := io.ReadAll(resp.Body)
-
-	searchResult := &SearchResult{}
-
-	err = json.Unmarshal(dat, &searchResult)
-
-	if err != nil {
-		fmt.Printf("error occurred: %s ", err)
-		return
-	}
-
-	fmt.Println(searchResult)
 
 }

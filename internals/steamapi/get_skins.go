@@ -1,0 +1,5 @@
+package steamapi
+
+func GetSkins() {
+
+}

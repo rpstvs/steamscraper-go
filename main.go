@@ -1,28 +1,51 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-
-	"github.com/gocolly/colly"
+	"io"
+	"net/http"
 )
 
+type Client struct {
+	httpClient http.Client
+}
+
 func main() {
-	c := colly.NewCollector()
 
-	c.OnHTML(".market_listing_row_link", func(e *colly.HTMLElement) {
+	url := "https://steamcommunity.com/market/search/render/?query=&start=0&norender=1&count=2&search_descriptions=0&sort_column=popular&sort_dir=desc&appid=730"
 
-		price := e.ChildText("div.market_listing_price_listings_block > div.market_listing_right_cell.market_listing_their_price > span.market_table_value.normal_price > span.normal_price")
-		name := e.ChildText("div.market_listing_item_name_block > .market_listing_item_name")
-		fmt.Println(price, name)
-	})
+	steamClient := &Client{
+		httpClient: http.Client{},
+	}
 
-	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting", r.URL)
-	})
+	req, err := http.NewRequest("GET", url, nil)
 
-	c.OnHTML(".pagebtn", func(e *colly.HTMLElement) {
-		c.Visit(e.Request.AbsoluteURL(e.Attr("href")))
-	})
+	if err != nil {
+		fmt.Printf("error occurred: %s", err)
+		return
+	}
 
-	c.Visit("https://steamcommunity.com/market/search?appid=730#p1_price_asc")
+	resp, err := steamClient.httpClient.Do(req)
+
+	if err != nil {
+		fmt.Printf("error occyrred: %s", err)
+		return
+	}
+
+	defer resp.Body.Close()
+
+	dat, err := io.ReadAll(resp.Body)
+
+	searchResult := &SearchResult{}
+
+	err = json.Unmarshal(dat, &searchResult)
+
+	if err != nil {
+		fmt.Printf("error occurred: %s ", err)
+		return
+	}
+
+	fmt.Println(searchResult)
+
 }

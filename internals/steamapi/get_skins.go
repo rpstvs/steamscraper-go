@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
-func (cfg *Client) GetSkins() SearchResult {
-	url := GetUrl()
+func (cfg *Client) GetSkins(start int) SearchResult {
+	url := GetUrl(start)
 	req, err := http.NewRequest("GET", url, nil)
 
 	if err != nil {
@@ -45,7 +46,14 @@ func (cfg *Client) GetSkins() SearchResult {
 
 		fmt.Println(item.HashName, item.SellPriceText)
 	}
-	//fmt.Println(searchResult)
+	if start < searchResult.TotalCount {
+		start += 100
+		fmt.Println("sleeping 30 seconds")
+		time.Sleep(30 * time.Second)
+		fmt.Printf("New Request starting on index: %d \n", start)
+		cfg.GetSkins(start)
+
+	}
 
 	return *searchResult
 }

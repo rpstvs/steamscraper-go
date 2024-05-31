@@ -48,9 +48,3 @@ type SearchResult struct {
 		SalePriceText string `json:"sale_price_text"`
 	} `json:"results"`
 }
-
-type Sticker struct {
-	Name       string
-	Tournament string
-	Condition  string
-}

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/rpstvs/steamscraper-go/internals/steamapi"
@@ -17,11 +18,17 @@ func ParseResults(results steamapi.SearchResult) {
 }
 
 func ParseSticker(sticker []string) Sticker {
-
+	if len(sticker) == 0 {
+		log.Fatal("no input")
+		return Sticker{}
+	}
 	tmp := strings.Split(sticker[1], "(")
 	name := tmp[0]
-	tournamentName := sticker[2]
 	condition := tmp[1]
+	tournamentName := "none"
+	if len(sticker) > 2 {
+		tournamentName = sticker[2]
+	}
 
 	fmt.Println(name, tournamentName, condition)
 

@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"strings"
 
 	"github.com/rpstvs/steamscraper-go/internals/steamapi"
@@ -22,9 +23,13 @@ func ParseSticker(sticker []string) Sticker {
 		log.Fatal("no input")
 		return Sticker{}
 	}
+
+	re := regexp.MustCompile(`\(([^)]+)\)`)
+	matches := re.FindStringSubmatch(sticker[1])
+
 	tmp := strings.Split(sticker[1], "(")
-	name := tmp[0]
-	condition := tmp[1]
+	name := strings.TrimSpace(tmp[0])
+	condition := matches[1]
 	tournamentName := "none"
 	if len(sticker) > 2 {
 		tournamentName = sticker[2]

@@ -5,3 +5,9 @@ type Sticker struct {
 	Tournament string
 	Condition  string
 }
+
+type Skin struct {
+	GunName   string
+	SkinName  string
+	Condition string
+}

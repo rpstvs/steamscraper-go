@@ -17,7 +17,7 @@ func TestSticker(t *testing.T) {
 				Tournament: "none",
 				Condition:  "Foil",
 			},
-			input: []string{"Sticker", "Gold Web (Foil) ", "(Foil)"},
+			input: []string{"Sticker", "Gold Web (Foil) "},
 		},
 		{
 			expected: Sticker{
@@ -25,7 +25,7 @@ func TestSticker(t *testing.T) {
 				Tournament: "none",
 				Condition:  "Foil",
 			},
-			input: []string{"Sticker", "Gold Web (Foil) ", "(Foil)"},
+			input: []string{"Sticker", "Gold Web (Foil) "},
 		},
 		{
 			expected: Sticker{
@@ -33,13 +33,17 @@ func TestSticker(t *testing.T) {
 				Tournament: "none",
 				Condition:  "Foil",
 			},
-			input: []string{"Sticker", "Gold Web (Foil)", "(Foil)"},
+			input: []string{"Sticker", "Gold Web (Foil)"},
 		},
 	}
 
 	for i, c := range cases {
 		t.Run(fmt.Sprintf("Test case %v", i), func(t *testing.T) {
-			ParseSticker(c.input)
+			actual := ParseSticker(c.input)
+			fmt.Println(actual)
+			if actual != c.expected {
+				t.Errorf("parsing failed")
+			}
 
 		})
 

@@ -6,22 +6,24 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/rpstvs/steamscraper-go/internals/utils"
 )
 
-func (cfg *Client) GetSkins(start int) SearchResult {
+func (cfg *Client) GetSkins(start int) utils.SearchResult {
 	url := GetUrl(start)
 	req, err := http.NewRequest("GET", url, nil)
 
 	if err != nil {
 		fmt.Printf("error occurred: %s", err)
-		return SearchResult{}
+		return utils.SearchResult{}
 	}
 
 	resp, err := cfg.httpClient.Do(req)
 
 	if err != nil {
 		fmt.Printf("error occyrred: %s", err)
-		return SearchResult{}
+		return utils.SearchResult{}
 	}
 
 	defer resp.Body.Close()
@@ -30,22 +32,24 @@ func (cfg *Client) GetSkins(start int) SearchResult {
 
 	if err != nil {
 		fmt.Printf("error: %s", err)
-		return SearchResult{}
+		return utils.SearchResult{}
 	}
 
-	searchResult := &SearchResult{}
+	searchResult := &utils.SearchResult{}
 
 	err = json.Unmarshal(dat, &searchResult)
 
 	if err != nil {
 		fmt.Printf("error occurred: %s ", err)
-		return SearchResult{}
+		return utils.SearchResult{}
 	}
+	/*
+		for _, item := range searchResult.Results {
 
-	for _, item := range searchResult.Results {
-
-		fmt.Println(item.HashName, item.SellPriceText)
-	}
+			//fmt.Println(item.HashName, item.SellPriceText)
+		}
+	*/
+	utils.ParseResults(*searchResult)
 	if start < searchResult.TotalCount {
 		start += 100
 		fmt.Println("sleeping 30 seconds")

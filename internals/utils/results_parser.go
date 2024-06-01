@@ -5,17 +5,32 @@ import (
 	"log"
 	"regexp"
 	"strings"
-
-	"github.com/rpstvs/steamscraper-go/internals/steamapi"
 )
 
-func ParseResults(results steamapi.SearchResult) {
+func ParseResults(results SearchResult) {
 
-	//for _, result := range results.Results {
+	for _, result := range results.Results {
 
-	//	name := strings.Split(" ", result.HashName)
+		name := strings.Split(result.HashName, "|")
 
-	//}
+		if len(name) == 1 {
+			fmt.Printf("Estou a entrar no if dos das caixas %s", name)
+			caixa := parseCase(name)
+			fmt.Println(caixa)
+			continue
+		}
+
+		if name[1] == "Sticker" {
+			fmt.Printf("Estou a entrar no if dos das stickers %s", name)
+			sticker := ParseSticker(name)
+			fmt.Println(sticker)
+		} else {
+			fmt.Printf("Estou a entrar no if dos das armas %s", name)
+			skin := parseSkin(name)
+			fmt.Println(skin)
+		}
+
+	}
 }
 
 func ParseSticker(sticker []string) Sticker {
@@ -23,6 +38,8 @@ func ParseSticker(sticker []string) Sticker {
 		log.Fatal("no input")
 		return Sticker{}
 	}
+
+	println(sticker)
 
 	pcondition := parseCondition(sticker[1])
 
@@ -34,7 +51,7 @@ func ParseSticker(sticker []string) Sticker {
 		tournamentName = sticker[2]
 	}
 
-	fmt.Println(name, tournamentName, condition)
+	//fmt.Println(name, tournamentName, condition)
 
 	return Sticker{
 		Name:       name,
@@ -61,6 +78,12 @@ func parseSkin(skin []string) Skin {
 		GunName:   gunName,
 		SkinName:  skinName,
 		Condition: condition,
+	}
+}
+
+func parseCase(name []string) Case {
+	return Case{
+		CaseName: name[0],
 	}
 }
 

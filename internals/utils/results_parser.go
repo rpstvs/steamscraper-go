@@ -24,12 +24,11 @@ func ParseSticker(sticker []string) Sticker {
 		return Sticker{}
 	}
 
-	re := regexp.MustCompile(`\(([^)]+)\)`)
-	matches := re.FindStringSubmatch(sticker[1])
+	pcondition := parseCondition(sticker[1])
 
 	tmp := strings.Split(sticker[1], "(")
 	name := strings.TrimSpace(tmp[0])
-	condition := matches[1]
+	condition := pcondition[1]
 	tournamentName := "none"
 	if len(sticker) > 2 {
 		tournamentName = sticker[2]
@@ -42,4 +41,32 @@ func ParseSticker(sticker []string) Sticker {
 		Tournament: tournamentName,
 		Condition:  condition,
 	}
+}
+
+func parseSkin(skin []string) Skin {
+
+	if len(skin) == 0 {
+		log.Fatal("no input")
+		return Skin{}
+	}
+
+	gunName := skin[0]
+
+	pCondition := parseCondition(skin[1])
+	tmp := strings.Split(skin[1], "(")
+	skinName := strings.TrimSpace(tmp[0])
+	condition := pCondition[1]
+
+	return Skin{
+		GunName:   gunName,
+		SkinName:  skinName,
+		Condition: condition,
+	}
+}
+
+func parseCondition(condition string) []string {
+	re := regexp.MustCompile(`\(([^)]+)\)`)
+	matches := re.FindStringSubmatch(condition)
+
+	return matches
 }

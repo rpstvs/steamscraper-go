@@ -17,19 +17,18 @@ func ParseResults(results SearchResult) {
 			caixa := parseCase(name)
 			fmt.Println(caixa)
 			continue
-		} else if len(name) == 2 {
-			fmt.Printf("estou a entrar aqui com a seguinte skin %s", name)
-			agent := parseAgent(name)
-			fmt.Println(agent)
-			continue
 		}
 
 		if name[0] == "Sticker" {
 			//fmt.Printf("Estou a entrar no if dos das stickers %s", name)
 			sticker := ParseSticker(name)
 			fmt.Println(sticker)
-		} else {
+		} else if strings.Contains(result.AssetDescription.Type, "Agente") {
 			//fmt.Printf("Estou a entrar no if dos das armas %s", name)
+			agent := parseSkin(name)
+			fmt.Println(agent)
+
+		} else {
 			skin := parseSkin(name)
 			fmt.Println(skin)
 		}
@@ -87,7 +86,6 @@ func parseSkin(skin []string) Skin {
 	skinName := strings.TrimSpace(tmp[0])
 
 	pCondition := parseCondition(skin[1])
-	fmt.Println(pCondition)
 
 	if pCondition != nil {
 		condition = pCondition[1]

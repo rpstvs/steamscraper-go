@@ -25,7 +25,7 @@ func ParseResults(results SearchResult) {
 			fmt.Println(sticker)
 		} else if strings.Contains(result.AssetDescription.Type, "Agente") {
 			//fmt.Printf("Estou a entrar no if dos das armas %s", name)
-			agent := parseSkin(name)
+			agent := parseAgent(name)
 			fmt.Println(agent)
 
 		} else {

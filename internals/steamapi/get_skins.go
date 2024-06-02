@@ -46,7 +46,7 @@ func (cfg *Client) GetSkins(start int) utils.SearchResult {
 	/*
 		for _, item := range searchResult.Results {
 
-			//fmt.Println(item.HashName, item.SellPriceText)
+			fmt.Println(item.HashName, item.SellPriceText)
 		}
 	*/
 	utils.ParseResults(*searchResult)

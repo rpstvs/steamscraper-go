@@ -16,6 +16,11 @@ type Case struct {
 	CaseName string
 }
 
+type Agent struct {
+	Name  string
+	Group string
+}
+
 type SearchResult struct {
 	Success    bool `json:"success"`
 	Start      int  `json:"start"`

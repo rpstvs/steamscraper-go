@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -121,4 +122,15 @@ func parseAgent(agent []string) Agent {
 		Name:  agent[0],
 		Group: agent[1],
 	}
+}
+
+func priceConverter(priceText string) float64 {
+
+	priceNum, err := strconv.ParseFloat(priceText, 32)
+	if err != nil {
+		return 0.00
+	}
+	price := priceNum / 100
+
+	return price
 }

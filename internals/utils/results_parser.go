@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -13,31 +12,31 @@ func ParseResults(results SearchResult) {
 	for _, result := range results.Results {
 		//fmt.Println(result.HashName)
 		name := strings.Split(result.HashName, "|")
-
+		price := priceConverter(result.SellPrice)
 		if len(name) == 1 {
-			caixa := parseCase(name)
+			caixa := parseCase(name, price)
 			fmt.Println(caixa)
 			continue
 		}
 
 		if name[0] == "Sticker" {
 			//fmt.Printf("Estou a entrar no if dos das stickers %s", name)
-			sticker := ParseSticker(name)
+			sticker := ParseSticker(name, price)
 			fmt.Println(sticker)
 		} else if strings.Contains(result.AssetDescription.Type, "Agente") {
 			//fmt.Printf("Estou a entrar no if dos das armas %s", name)
-			agent := parseAgent(name)
+			agent := parseAgent(name, price)
 			fmt.Println(agent)
 
 		} else {
-			skin := parseSkin(name)
+			skin := parseSkin(name, price)
 			fmt.Println(skin)
 		}
 
 	}
 }
 
-func ParseSticker(sticker []string) Sticker {
+func ParseSticker(sticker []string, price float64) Sticker {
 	if len(sticker) == 0 {
 		log.Fatal("no input")
 		return Sticker{}
@@ -69,10 +68,11 @@ func ParseSticker(sticker []string) Sticker {
 		Name:       name,
 		Tournament: tournamentName,
 		Condition:  condition,
+		Price:      price,
 	}
 }
 
-func parseSkin(skin []string) Skin {
+func parseSkin(skin []string, price float64) Skin {
 
 	if len(skin) == 0 {
 		log.Fatal("no input")
@@ -96,12 +96,23 @@ func parseSkin(skin []string) Skin {
 		GunName:   gunName,
 		SkinName:  skinName,
 		Condition: condition,
+		Price:     price,
 	}
 }
 
-func parseCase(name []string) Case {
+func parseCase(name []string, price float64) Case {
 	return Case{
 		CaseName: name[0],
+		Price:    price,
+	}
+}
+
+func parseAgent(agent []string, price float64) Agent {
+
+	return Agent{
+		Name:  agent[0],
+		Group: agent[1],
+		Price: price,
 	}
 }
 
@@ -116,21 +127,9 @@ func parseCondition(condition string) []string {
 	return matches
 }
 
-func parseAgent(agent []string) Agent {
-
-	return Agent{
-		Name:  agent[0],
-		Group: agent[1],
-	}
-}
-
-func priceConverter(priceText string) float64 {
-
-	priceNum, err := strconv.ParseFloat(priceText, 32)
-	if err != nil {
-		return 0.00
-	}
-	price := priceNum / 100
+func priceConverter(priceInt int) float64 {
+	tmp := float64(priceInt)
+	price := float64(tmp / 100.0)
 
 	return price
 }

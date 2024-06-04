@@ -4,21 +4,25 @@ type Sticker struct {
 	Name       string
 	Tournament string
 	Condition  string
+	Price      float64
 }
 
 type Skin struct {
 	GunName   string
 	SkinName  string
 	Condition string
+	Price     float64
 }
 
 type Case struct {
 	CaseName string
+	Price    float64
 }
 
 type Agent struct {
 	Name  string
 	Group string
+	Price float64
 }
 
 type SearchResult struct {

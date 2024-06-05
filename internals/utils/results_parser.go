@@ -22,16 +22,17 @@ func ParseResults(results SearchResult) {
 			continue
 		}
 
-		if name[0] == "Sticker" {
+		if name[0] == "Sticker " {
 			//fmt.Printf("Estou a entrar no if dos das stickers %s", name)
 			sticker := ParseSticker(name, price)
 			fmt.Println(sticker)
 		} else if strings.Contains(result.AssetDescription.Type, "Agente") {
-			//fmt.Printf("Estou a entrar no if dos das armas %s", name)
+			//fmt.Printf("Estou a entrar no if dos  agentes %s", name)
 			agent := parseAgent(name, price)
 			fmt.Println(agent)
 
 		} else {
+			//fmt.Printf("Estou a entrar no if dos das armas %s", name)
 			skin := parseSkin(name, price)
 			fmt.Println(skin)
 		}

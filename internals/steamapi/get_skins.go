@@ -43,7 +43,7 @@ func (cfg *Client) GetSkins(start int) utils.SearchResult {
 		fmt.Printf("error occurred: %s ", err)
 		return utils.SearchResult{}
 	}
-	utils.WriteToFile(*searchResult)
+	//utils.WriteToFile(*searchResult)
 	utils.ParseResults(*searchResult)
 	if start < searchResult.TotalCount {
 		start += 100

@@ -19,7 +19,7 @@ func main() {
 		steamApiClient: steamClient,
 	}
 
-	Resultados := cfg.steamApiClient.GetSkins(0)
+	Resultados := cfg.steamApiClient.GetSkins(7500)
 
 	for _, resultado := range Resultados.Results {
 		fmt.Println(resultado.HashName, resultado.SellPriceText)

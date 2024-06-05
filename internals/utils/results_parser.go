@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"encoding/csv"
 	"fmt"
 	"log"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -13,6 +15,7 @@ func ParseResults(results SearchResult) {
 		//fmt.Println(result.HashName)
 		name := strings.Split(result.HashName, "|")
 		price := priceConverter(result.SellPrice)
+
 		if len(name) == 1 {
 			caixa := parseCase(name, price)
 			fmt.Println(caixa)
@@ -132,4 +135,24 @@ func priceConverter(priceInt int) float64 {
 	price := float64(tmp / 100.0)
 
 	return price
+}
+
+func WriteToFile(results SearchResult) {
+	file, err := os.OpenFile("tmp2.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Println("couldnt open file")
+	}
+	defer file.Close()
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	writer := csv.NewWriter(file)
+
+	for _, result := range results.Results {
+		row := []string{result.HashName, result.AssetDescription.Classid}
+		writer.Write(row)
+	}
+
 }

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 
 	"github.com/rpstvs/steamscraper-go/internals/utils"
 )
@@ -44,15 +43,7 @@ func (cfg *Client) GetSkins(start int) utils.SearchResult {
 		return utils.SearchResult{}
 	}
 	//utils.WriteToFile(*searchResult)
-	utils.ParseResults(*searchResult)
-	if start < searchResult.TotalCount {
-		start += 100
-		fmt.Println("sleeping 30 seconds")
-		time.Sleep(15 * time.Second)
-		fmt.Printf("New Request starting on index: %d \n", start)
-		cfg.GetSkins(start)
-
-	}
+	//utils.ParseResults(*searchResult)
 
 	return *searchResult
 }

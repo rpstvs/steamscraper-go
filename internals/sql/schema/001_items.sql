@@ -4,4 +4,4 @@ CREATE TABLE Items (
     ItemName TEXT NOT NULL
 );
 -- +goose Down
-DROP TABLE Item;
+DROP TABLE Items;

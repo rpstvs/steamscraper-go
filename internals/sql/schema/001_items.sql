@@ -1,9 +1,7 @@
 -- +goose Up
-CREATE TABLE Item (
-    Id INTEGER UNIQUE NOT NULL,
-    ItemName TEXT NOT NULL,
-    Condition TEXT,
-    Price FLOAT,
+CREATE TABLE Items (
+    Id INTEGER UNIQUE NOT NULL PRIMARY KEY,
+    ItemName TEXT NOT NULL
 );
 -- +goose Down
-DROP TABLE users;
+DROP TABLE Item;

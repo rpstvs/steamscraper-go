@@ -27,7 +27,7 @@ func main() {
 		log.Printf("no connection to the DB")
 	}
 
-	steamClient := steamapi.NewClient(5 * time.Second)
+	steamClient := steamapi.NewClient(10 * time.Second)
 	dbQueries := database.New(db)
 	cfg := &ApiConfig{
 		steamApiClient: steamClient,

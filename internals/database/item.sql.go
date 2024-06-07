@@ -7,6 +7,8 @@ package database
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 const createItem = `-- name: CreateItem :one
@@ -16,7 +18,7 @@ RETURNING id, itemname
 `
 
 type CreateItemParams struct {
-	ID       int32
+	ID       uuid.UUID
 	Itemname string
 }
 
@@ -25,4 +27,32 @@ func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, e
 	var i Item
 	err := row.Scan(&i.ID, &i.Itemname)
 	return i, err
+}
+
+const getItemsIds = `-- name: GetItemsIds :many
+SELECT Id
+FROM Items
+`
+
+func (q *Queries) GetItemsIds(ctx context.Context) ([]uuid.UUID, error) {
+	rows, err := q.db.QueryContext(ctx, getItemsIds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

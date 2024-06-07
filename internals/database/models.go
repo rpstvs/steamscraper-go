@@ -6,15 +6,17 @@ package database
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Item struct {
-	ID       int32
+	ID       uuid.UUID
 	Itemname string
 }
 
 type Price struct {
 	Pricedate time.Time
 	ItemID    int32
-	Price     string
+	Price     float64
 }

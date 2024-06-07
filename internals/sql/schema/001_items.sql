@@ -1,7 +1,7 @@
 -- +goose Up
 CREATE TABLE Items (
-    Id INTEGER UNIQUE NOT NULL PRIMARY KEY,
-    ItemName TEXT NOT NULL
+    Id UUID PRIMARY KEY,
+    ItemName TEXT UNIQUE NOT NULL
 );
 -- +goose Down
 DROP TABLE Items;

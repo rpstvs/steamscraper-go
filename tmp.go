@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
-	"strconv"
 	"time"
 
 	"github.com/rpstvs/steamscraper-go/internals/database"
@@ -12,19 +10,18 @@ import (
 )
 
 func (cfg *ApiConfig) WriteToDB(results utils.SearchResult) {
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	//ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx := context.Background()
 
 	for _, result := range results.Results {
 		fmt.Println("vou escrever na base de dados")
-		id, err := strconv.Atoi(result.AssetDescription.Classid)
+		id := 1
+		//id, _ := strconv.ParseInt(result.AssetDescription.Classid, 10, 64)
 		cfg.DB.CreateItem(ctx, database.CreateItemParams{
 			ID:       int32(id),
 			Itemname: result.HashName,
 		})
 
-		if err != nil {
-			log.Println(err)
-		}
 	}
 
 	start := results.Start

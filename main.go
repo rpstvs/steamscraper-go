@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -17,21 +17,11 @@ type ApiConfig struct {
 	DB             *database.Queries
 }
 
-const (
-	host     = "aws-0-us-east-1.pooler.supabase.com"
-	port     = 6543 // default PostgreSQL port
-	user     = "postgres.ufbvnnkcvcwqcotbxkcl"
-	password = "T8iebtodPi+-314"
-	dbname   = "postgres"
-)
-
 func main() {
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require",
-		host, port, user, password, dbname)
 	godotenv.Load(".env")
-	//dbURL := os.Getenv("DATABASE_URL")
-	db, err := sql.Open("postgres", psqlInfo)
+	dbURL := os.Getenv("DATABASE_URL")
+	db, err := sql.Open("postgres", dbURL)
 
 	if err != nil {
 		log.Printf("no connection to the DB")

@@ -5,7 +5,6 @@
 package database
 
 import (
-	"database/sql"
 	"time"
 )
 
@@ -17,5 +16,5 @@ type Item struct {
 type Price struct {
 	Pricedate time.Time
 	ItemID    int32
-	Price     sql.NullString
+	Price     string
 }

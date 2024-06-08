@@ -14,7 +14,7 @@ func ParseResults(results SearchResult) {
 	for _, result := range results.Results {
 		//fmt.Println(result.HashName)
 		name := strings.Split(result.HashName, "|")
-		price := priceConverter(result.SellPrice)
+		price := PriceConverter(result.SellPrice)
 
 		if len(name) == 1 {
 			caixa := parseCase(name, price)
@@ -131,7 +131,7 @@ func parseCondition(condition string) []string {
 	return matches
 }
 
-func priceConverter(priceInt int) float64 {
+func PriceConverter(priceInt int) float64 {
 	tmp := float64(priceInt)
 	price := float64(tmp / 100.0)
 

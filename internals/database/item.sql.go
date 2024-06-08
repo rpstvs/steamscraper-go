@@ -29,6 +29,19 @@ func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, e
 	return i, err
 }
 
+const getItemByName = `-- name: GetItemByName :one
+SELECT Id
+FROM Items
+WHERE itemname = $1
+`
+
+func (q *Queries) GetItemByName(ctx context.Context, itemname string) (uuid.UUID, error) {
+	row := q.db.QueryRowContext(ctx, getItemByName, itemname)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
 const getItemsIds = `-- name: GetItemsIds :many
 SELECT Id
 FROM Items

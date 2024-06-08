@@ -17,6 +17,6 @@ type Item struct {
 
 type Price struct {
 	Pricedate time.Time
-	ItemID    int32
+	ItemID    uuid.UUID
 	Price     float64
 }

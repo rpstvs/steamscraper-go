@@ -107,8 +107,8 @@ func TestPrice(t *testing.T) {
 
 	for i, c := range cases {
 		t.Run(fmt.Sprintf("Test case %v", i), func(t *testing.T) {
-			actual := priceConverter(c.input)
-			fmt.Println(actual)
+			actual := PriceConverter(c.input)
+			fmt.Printf("t: %v\n", actual)
 			if actual != c.expected {
 				t.Errorf("parsing failed")
 			}

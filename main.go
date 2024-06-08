@@ -36,6 +36,8 @@ func main() {
 
 	resultados := cfg.steamApiClient.GetSkins(0)
 
-	cfg.WriteToDB(resultados)
+	//cfg.WriteToDB(resultados)
+
+	cfg.PriceUpdate(resultados)
 
 }

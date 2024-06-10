@@ -34,10 +34,6 @@ func main() {
 		DB:             dbQueries,
 	}
 
-	resultados := cfg.steamApiClient.GetSkins(0)
-
-	//cfg.WriteToDB(resultados)
-
-	cfg.PriceUpdate(resultados)
+	cfg.updateDB(0)
 
 }

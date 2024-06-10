@@ -10,57 +10,52 @@ import (
 	"github.com/rpstvs/steamscraper-go/internals/utils"
 )
 
-func (cfg *ApiConfig) WriteToDB(results utils.SearchResult) {
+func (cfg *ApiConfig) updateDB(index int) {
+
+	resultados := cfg.steamApiClient.GetSkins(index)
+
+	start := resultados.Start
+	end := resultados.TotalCount
 
 	ctx := context.Background()
-
-	for _, result := range results.Results {
-		//fmt.Println("vou escrever na base de dados")
-
-		cfg.DB.CreateItem(ctx, database.CreateItemParams{
-			ID:       uuid.New(),
-			Itemname: result.HashName,
-		})
+	for _, result := range resultados.Results {
+		fmt.Printf("vou dar update ao item %s \n", result.HashName)
+		cfg.WriteToDB(result.HashName, ctx)
+		cfg.PriceUpdate(result.HashName, result.SellPrice, ctx)
 
 	}
 
-	start := results.Start
-	if start < results.TotalCount {
-		start += 100
-		fmt.Println("sleeping 30 seconds")
+	if start < end {
+		fmt.Println("dormir 15s")
 		time.Sleep(15 * time.Second)
-		fmt.Printf("New Request starting on index: %d \n", start)
-		resultados := cfg.steamApiClient.GetSkins(start)
-		cfg.WriteToDB(resultados)
+		cfg.updateDB(start)
 	}
+
 }
 
-func (cfg *ApiConfig) PriceUpdate(results utils.SearchResult) {
-	ctx := context.Background()
+func (cfg *ApiConfig) WriteToDB(itemName string, ctx context.Context) {
 
-	for _, result := range results.Results {
-		fmt.Printf("Vou adicionar o preço de %s\n", result.HashName)
-		id, err := cfg.DB.GetItemByName(ctx, result.HashName)
-		price := utils.PriceConverter(result.SellPrice)
-		if err != nil {
-			fmt.Println(err)
-		}
+	//fmt.Println("vou escrever na base de dados")
 
-		cfg.DB.AddPrice(ctx, database.AddPriceParams{
-			ItemID:    id,
-			Pricedate: time.Now().UTC(),
-			Price:     price,
-		})
+	cfg.DB.CreateItem(ctx, database.CreateItemParams{
+		ID:       uuid.New(),
+		Itemname: itemName,
+	})
 
+}
+
+func (cfg *ApiConfig) PriceUpdate(itemName string, price int, ctx context.Context) {
+
+	id, err := cfg.DB.GetItemByName(ctx, itemName)
+	priceDb := utils.PriceConverter(price)
+	if err != nil {
+		fmt.Println(err)
 	}
 
-	start := results.Start
-	if start < results.TotalCount {
-		start += 100
-		fmt.Println("sleeping 30 seconds")
-		time.Sleep(15 * time.Second)
-		fmt.Printf("New Request starting on index: %d \n", start)
-		resultados := cfg.steamApiClient.GetSkins(start)
-		cfg.WriteToDB(resultados)
-	}
+	cfg.DB.AddPrice(ctx, database.AddPriceParams{
+		ItemID:    id,
+		Pricedate: time.Now().UTC(),
+		Price:     priceDb,
+	})
+
 }

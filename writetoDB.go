@@ -26,6 +26,7 @@ func (cfg *ApiConfig) updateDB(index int) {
 	}
 
 	if start < end {
+		start += 100
 		fmt.Println("dormir 15s")
 		time.Sleep(15 * time.Second)
 		cfg.updateDB(start)
@@ -52,9 +53,11 @@ func (cfg *ApiConfig) PriceUpdate(itemName string, price int, ctx context.Contex
 		fmt.Println(err)
 	}
 
+	date := utils.ConvertDate()
+
 	cfg.DB.AddPrice(ctx, database.AddPriceParams{
 		ItemID:    id,
-		Pricedate: time.Now().UTC(),
+		Pricedate: date,
 		Price:     priceDb,
 	})
 

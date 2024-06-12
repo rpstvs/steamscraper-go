@@ -2,9 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 	"time"
+
+	"github.com/robfig/cron/v3"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -34,6 +37,13 @@ func main() {
 		DB:             dbQueries,
 	}
 
-	cfg.updateDB(0)
+	c := cron.New()
+
+	c.AddFunc("*/1 * * * *", func() {
+		fmt.Println("starting job")
+		cfg.updateDB(0)
+	})
+	c.Start()
+	select {}
 
 }

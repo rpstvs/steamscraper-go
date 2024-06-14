@@ -1,5 +1,8 @@
 package main
 
+/*
+
+
 import (
 	"encoding/json"
 	"fmt"
@@ -38,3 +41,4 @@ func (cfg *ApiConfig) GetPrice(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(price)
 
 }
+*/

@@ -46,3 +46,16 @@ func (q *Queries) AddPrice(ctx context.Context, arg AddPriceParams) ([]Price, er
 	}
 	return items, nil
 }
+
+const getPricebyId = `-- name: GetPricebyId :one
+SELECT Price
+FROM Prices
+WHERE Item_id = $1
+`
+
+func (q *Queries) GetPricebyId(ctx context.Context, itemID uuid.UUID) (float64, error) {
+	row := q.db.QueryRowContext(ctx, getPricebyId, itemID)
+	var price float64
+	err := row.Scan(&price)
+	return price, err
+}

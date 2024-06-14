@@ -13,7 +13,6 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/rpstvs/steamscraper-go/internals/database"
-	"github.com/rpstvs/steamscraper-go/internals/handlers"
 	"github.com/rpstvs/steamscraper-go/internals/steamapi"
 )
 
@@ -40,9 +39,9 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	cors := middlewareCors(mux)
 
-	mux.HandleFunc("GET /api/v1/login", handlers.HandlerGetPric)
+	mux.HandleFunc("GET /api/v1/search", cfg.GetPrice)
+	cors := middlewareCors(mux)
 
 	server := &http.Server{
 		Addr:    ":" + Port,
@@ -51,7 +50,7 @@ func main() {
 
 	c := cron.New()
 
-	c.AddFunc("*/1 * * * *", func() {
+	c.AddFunc("* * */1 * *", func() {
 		fmt.Println("starting job")
 		cfg.updateDB(0)
 	})

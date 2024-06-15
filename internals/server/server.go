@@ -13,8 +13,8 @@ type Server struct {
 	DB  *database.Queries
 }
 
-func ReturnServer(port string) *http.Server {
-
+func ReturnServer() *http.Server {
+	Port := os.Getenv("PORT")
 	dbURL := os.Getenv("DATABASE_URL")
 	db, _ := sql.Open("postgres", dbURL)
 	dbQueries := database.New(db)
@@ -24,23 +24,17 @@ func ReturnServer(port string) *http.Server {
 		DB:  dbQueries,
 	}
 
-	NewServer.mux.HandleFunc("GET /v1/api/search", NewServer.GetPrice)
+	NewServer.RegisterEndpoints()
+
+	//NewServer.mux.HandleFunc("GET /v1/api/search", NewServer.GetPrice)
 
 	return &http.Server{
-		Addr:    ":" + port,
+		Addr:    ":" + Port,
 		Handler: middlewareCors(&NewServer.mux),
 	}
 }
 
-func middlewareCors(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, POST, DELETE ")
-		w.Header().Set("Access-Control-Allow-Headers", "*")
-		if r.Method == "Options" {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
+func (srv *Server) RegisterEndpoints() {
+
+	srv.mux.HandleFunc("GET /v1/api/search", srv.GetPrice)
 }

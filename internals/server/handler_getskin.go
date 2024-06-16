@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (cfg *Server) GetPrice(w http.ResponseWriter, r *http.Request) {
+func (cfg *Server) GetLatestPrice(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Body string `json:"body"`
 	}

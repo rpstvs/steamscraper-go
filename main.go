@@ -22,12 +22,11 @@ func main() {
 
 		c.AddFunc("*1 * * * * *", func() {
 			fmt.Println("starting job")
-			steamClient.UpdateDB(0)
+
 		})
 		c.Start()
-
 	*/
-	server.ListenAndServe()
 	steamClient.UpdateDB(0)
+	server.ListenAndServe()
 
 }

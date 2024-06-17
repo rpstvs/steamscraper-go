@@ -47,16 +47,38 @@ func (q *Queries) AddPrice(ctx context.Context, arg AddPriceParams) ([]Price, er
 	return items, nil
 }
 
-const getPricebyId = `-- name: GetPricebyId :one
-SELECT pricedate, item_id, price
+const getPricebyId = `-- name: GetPricebyId :many
+SELECT Price,
+    PriceDate
 FROM Prices
 WHERE Item_id = $1
 ORDER BY PriceDate DESC
 `
 
-func (q *Queries) GetPricebyId(ctx context.Context, itemID uuid.UUID) (Price, error) {
-	row := q.db.QueryRowContext(ctx, getPricebyId, itemID)
-	var i Price
-	err := row.Scan(&i.Pricedate, &i.ItemID, &i.Price)
-	return i, err
+type GetPricebyIdRow struct {
+	Price     float64
+	Pricedate time.Time
+}
+
+func (q *Queries) GetPricebyId(ctx context.Context, itemID uuid.UUID) ([]GetPricebyIdRow, error) {
+	rows, err := q.db.QueryContext(ctx, getPricebyId, itemID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetPricebyIdRow
+	for rows.Next() {
+		var i GetPricebyIdRow
+		if err := rows.Scan(&i.Price, &i.Pricedate); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

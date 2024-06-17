@@ -41,4 +41,44 @@ func (cfg *ApiConfig) GetPrice(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(price)
 
 }
+
+dbURL := os.Getenv("DATABASE_URL")
+	db, _ := sql.Open("postgres", dbURL)
+	dbQueries := database.New(db)
+	app := fiber.New()
+	app.Use(cors.New())
+	app.Use(logger.New())
+
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World!")
+	})
+
+	type Item struct {
+		Name string `json:"name"`
+	}
+	app.Post("/v1/api/price", func(c *fiber.Ctx) error {
+
+		p := new(Item)
+
+		if err := c.BodyParser(p); err != nil {
+			return err
+		}
+
+		id, err := dbQueries.GetItemByName(c.Context(), p.Name)
+
+		if err != nil {
+			fmt.Println("couldnt find the skin")
+		}
+
+		price, err := dbQueries.GetPricebyId(c.Context(), id)
+
+		if err != nil {
+			panic("no price")
+		}
+		log.Info(id)
+		log.Info(price)
+		return c.JSON(price)
+	})
+
+	app.Listen(":8080")
 */

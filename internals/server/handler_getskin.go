@@ -12,7 +12,6 @@ func (cfg *Server) GetLatestPrice(w http.ResponseWriter, r *http.Request) {
 		Body string `json:"body"`
 	}
 
-	fmt.Println("got a request")
 	decoder := json.NewDecoder(r.Body)
 
 	params := parameters{}
@@ -39,10 +38,10 @@ func (cfg *Server) GetLatestPrice(w http.ResponseWriter, r *http.Request) {
 
 	item := &Item{
 		Name:      params.Body,
-		Price:     price.Price,
-		PriceDate: price.Pricedate,
+		Price:     price[0].Price,
+		PriceDate: price[0].Pricedate,
 	}
 	fmt.Println(item)
-	RespondWithJson(w, http.StatusOK, item)
+	RespondWithJson(w, http.StatusOK, price)
 
 }

@@ -37,5 +37,5 @@ func ReturnServer() *http.Server {
 
 func (srv *Server) RegisterEndpoints() {
 
-	srv.mux.HandleFunc("GET /v1/api/price/latest", srv.GetLatestPrice)
+	srv.mux.HandleFunc("/v1/api/price", srv.GetLatestPrice)
 }

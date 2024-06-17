@@ -48,14 +48,15 @@ func (q *Queries) AddPrice(ctx context.Context, arg AddPriceParams) ([]Price, er
 }
 
 const getPricebyId = `-- name: GetPricebyId :one
-SELECT Price
+SELECT pricedate, item_id, price
 FROM Prices
 WHERE Item_id = $1
+ORDER BY PriceDate DESC
 `
 
-func (q *Queries) GetPricebyId(ctx context.Context, itemID uuid.UUID) (float64, error) {
+func (q *Queries) GetPricebyId(ctx context.Context, itemID uuid.UUID) (Price, error) {
 	row := q.db.QueryRowContext(ctx, getPricebyId, itemID)
-	var price float64
-	err := row.Scan(&price)
-	return price, err
+	var i Price
+	err := row.Scan(&i.Pricedate, &i.ItemID, &i.Price)
+	return i, err
 }

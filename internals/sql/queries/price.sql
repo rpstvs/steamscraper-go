@@ -3,6 +3,7 @@ INSERT INTO Prices (PriceDate, Item_id, Price)
 VALUES ($1, $2, $3)
 RETURNING *;
 -- name: GetPricebyId :one
-SELECT Price
+SELECT *
 FROM Prices
-WHERE Item_id = $1;
+WHERE Item_id = $1
+ORDER BY PriceDate DESC;

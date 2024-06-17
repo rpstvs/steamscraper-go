@@ -23,6 +23,7 @@ func ReturnServer() *http.Server {
 		mux: *http.NewServeMux(),
 		DB:  dbQueries,
 	}
+	cors := middlewareCors(&NewServer.mux)
 
 	NewServer.RegisterEndpoints()
 
@@ -30,7 +31,7 @@ func ReturnServer() *http.Server {
 
 	return &http.Server{
 		Addr:    ":" + Port,
-		Handler: middlewareCors(&NewServer.mux),
+		Handler: cors,
 	}
 }
 

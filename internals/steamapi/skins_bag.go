@@ -6,16 +6,30 @@ import (
 )
 
 type Bag struct {
-	id    uuid.UUID
-	items []database.Item
+	id         uuid.UUID
+	items      []database.Item
+	TotalPrice float64
 }
 
-func (c *Client) AddItemtoBag() {
+func (c *Client) CreateBag() Bag{
 
+}
+
+func (c *Client) AddItemtoBag(bag Bag, item database.Item)
+{
+	append(bag, item.ID)
+	
+	
 }
 
 func (c *Client) RemoveItemFromBag() {
 
+}
+
+func addPrice(item database.Price, total float64) float64 {
+
+	total += item.Price
+	return total
 }
 
 /*

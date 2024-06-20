@@ -20,3 +20,8 @@ type Price struct {
 	ItemID    uuid.UUID
 	Price     float64
 }
+
+type User struct {
+	ID  uuid.UUID
+	Bag uuid.NullUUID
+}

@@ -8,3 +8,9 @@ SELECT Price,
 FROM Prices
 WHERE Item_id = $1
 ORDER BY PriceDate DESC;
+-- name: GetLatestPrice :one
+SELECT Price,
+    PriceDate
+FROM Prices
+WHERE Item_id = $1
+ORDER BY PriceDate DESC;

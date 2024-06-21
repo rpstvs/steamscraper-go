@@ -9,25 +9,27 @@ import (
 )
 
 type Bag struct {
-	id         uuid.UUID
-	items      []database.Item
+	ID         uuid.UUID
+	Name       string
+	Items      []database.Item
 	TotalPrice float64
 }
 
-func (c *Client) CreateBag() Bag {
+func CreateBag(name string) Bag {
 	var emptySlice []database.Item
 	totalPrice := 0.0
-	newBag := &Bag{
-		id:         uuid.New(),
-		items:      emptySlice,
+	newBag := Bag{
+		ID:         uuid.New(),
+		Name:       name,
+		Items:      emptySlice,
 		TotalPrice: totalPrice,
 	}
-	return *newBag
+	return newBag
 
 }
 
 func (c *Client) AddItemtoBag(bag Bag, item database.Item) Bag {
-	bag.items = append(bag.items, item)
+	bag.Items = append(bag.Items, item)
 
 	itemPrice, err := c.DB.GetLatestPrice(context.Background(), item.ID)
 
@@ -38,8 +40,8 @@ func (c *Client) AddItemtoBag(bag Bag, item database.Item) Bag {
 
 	totalPrice := addPrice(itemPrice.Price, bag.TotalPrice)
 	updatedBag := &Bag{
-		id:         bag.id,
-		items:      bag.items,
+		ID:         bag.ID,
+		Items:      bag.Items,
 		TotalPrice: totalPrice,
 	}
 

@@ -1,9 +1,6 @@
 package steamapi
 
 import (
-	"context"
-	"fmt"
-
 	"github.com/google/uuid"
 	"github.com/rpstvs/steamscraper-go/internals/database"
 )
@@ -11,12 +8,12 @@ import (
 type Bag struct {
 	ID         uuid.UUID
 	Name       string
-	Items      []database.Item
+	Items      []uuid.UUID
 	TotalPrice float64
 }
 
 func CreateBag(name string) Bag {
-	var emptySlice []database.Item
+	var emptySlice []uuid.UUID
 	totalPrice := 0.0
 	newBag := Bag{
 		ID:         uuid.New(),
@@ -28,20 +25,13 @@ func CreateBag(name string) Bag {
 
 }
 
-func (c *Client) AddItemtoBag(bag Bag, item database.Item) Bag {
-	bag.Items = append(bag.Items, item)
+func AddItemtoBag(bag database.Bag, item database.GetLatestPriceRow) Bag {
+	bag.ItemID = append(bag.ItemID, item.ItemID)
 
-	itemPrice, err := c.DB.GetLatestPrice(context.Background(), item.ID)
-
-	if err != nil {
-		fmt.Println("item does not exist")
-		return Bag{}
-	}
-
-	totalPrice := addPrice(itemPrice.Price, bag.TotalPrice)
+	totalPrice := addPrice(item.Price, bag.Totalvalue)
 	updatedBag := &Bag{
 		ID:         bag.ID,
-		Items:      bag.Items,
+		Items:      bag.ItemID,
 		TotalPrice: totalPrice,
 	}
 
@@ -49,7 +39,7 @@ func (c *Client) AddItemtoBag(bag Bag, item database.Item) Bag {
 
 }
 
-func (c *Client) RemoveItemFromBag() {
+func RemoveItemFromBag() {
 
 }
 

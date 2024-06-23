@@ -49,21 +49,21 @@ func (q *Queries) AddPrice(ctx context.Context, arg AddPriceParams) ([]Price, er
 
 const getLatestPrice = `-- name: GetLatestPrice :one
 SELECT Price,
-    PriceDate
+    Item_id
 FROM Prices
 WHERE Item_id = $1
 ORDER BY PriceDate DESC
 `
 
 type GetLatestPriceRow struct {
-	Price     float64
-	Pricedate time.Time
+	Price  float64
+	ItemID uuid.UUID
 }
 
 func (q *Queries) GetLatestPrice(ctx context.Context, itemID uuid.UUID) (GetLatestPriceRow, error) {
 	row := q.db.QueryRowContext(ctx, getLatestPrice, itemID)
 	var i GetLatestPriceRow
-	err := row.Scan(&i.Price, &i.Pricedate)
+	err := row.Scan(&i.Price, &i.ItemID)
 	return i, err
 }
 

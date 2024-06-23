@@ -1,10 +1,12 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
+	"github.com/rpstvs/steamscraper-go/internals/database"
 	"github.com/rpstvs/steamscraper-go/internals/steamapi"
 )
 
@@ -25,7 +27,11 @@ func (cfg *Server) CreateBag(w http.ResponseWriter, r *http.Request) {
 
 	bag := steamapi.CreateBag(params.Name)
 
-	fmt.Println(bag)
+	cfg.DB.CreateBag(context.Background(), database.CreateBagParams{
+		ID:         bag.ID,
+		ItemID:     bag.Items,
+		Totalvalue: bag.TotalPrice,
+	})
 
 	RespondWithJson(w, http.StatusOK, bag)
 }

@@ -10,6 +10,12 @@ import (
 	"github.com/google/uuid"
 )
 
+type Bag struct {
+	ID         uuid.UUID
+	ItemID     []uuid.UUID
+	Totalvalue float64
+}
+
 type Item struct {
 	ID       uuid.UUID
 	Itemname string

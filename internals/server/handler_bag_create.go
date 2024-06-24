@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -27,11 +26,16 @@ func (cfg *Server) CreateBag(w http.ResponseWriter, r *http.Request) {
 
 	bag := steamapi.CreateBag(params.Name)
 
-	cfg.DB.CreateBag(context.Background(), database.CreateBagParams{
+	bagDb, err := cfg.DB.CreateBag(r.Context(), database.CreateBagParams{
 		ID:         bag.ID,
 		ItemID:     bag.Items,
-		Totalvalue: bag.TotalPrice,
+		Totalvalue: 0.0,
 	})
 
-	RespondWithJson(w, http.StatusOK, bag)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	RespondWithJson(w, http.StatusOK, bagDb)
 }

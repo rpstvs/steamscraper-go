@@ -39,8 +39,9 @@ func AddItemtoBag(bag database.Bag, item database.GetLatestPriceRow) Bag {
 
 }
 
-func RemoveItemFromBag() {
+func RemoveItemFromBag(bag database.Bag, item database.GetLatestPriceRow) Bag {
 
+	return Bag{}
 }
 
 func addPrice(itemPrice, total float64) float64 {

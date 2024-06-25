@@ -40,8 +40,18 @@ func AddItemtoBag(bag database.Bag, item database.GetLatestPriceRow) Bag {
 }
 
 func RemoveItemFromBag(bag database.Bag, item database.GetLatestPriceRow) Bag {
+	var newItemList []uuid.UUID
+	for i, id := range bag.ItemID {
+		if id == item.ItemID {
+			newItemList = append(bag.ItemID[:i], bag.ItemID[i+1:]...)
+		}
+	}
 
-	return Bag{}
+	return Bag{
+		ID:         bag.ID,
+		Items:      newItemList,
+		TotalPrice: 0.0,
+	}
 }
 
 func addPrice(itemPrice, total float64) float64 {

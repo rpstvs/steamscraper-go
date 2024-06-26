@@ -37,8 +37,6 @@ func (cfg *Client) UpdateDB(index int) {
 
 func (cfg *Client) WriteToDB(itemName string, ctx context.Context) {
 
-	//fmt.Println("vou escrever na base de dados")
-
 	cfg.DB.CreateItem(ctx, database.CreateItemParams{
 		ID:       uuid.New(),
 		Itemname: itemName,

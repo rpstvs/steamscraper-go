@@ -9,30 +9,28 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 )
 
 const createBag = `-- name: CreateBag :one
-INSERT INTO Bag (Id, Item_id, TotalValue)
-VALUES ($1, $2, $3)
-RETURNING id, item_id, totalvalue
+INSERT INTO Bag (Id, TotalValue)
+VALUES ($1, $2)
+RETURNING id, totalvalue
 `
 
 type CreateBagParams struct {
 	ID         uuid.UUID
-	ItemID     []uuid.UUID
 	Totalvalue float64
 }
 
 func (q *Queries) CreateBag(ctx context.Context, arg CreateBagParams) (Bag, error) {
-	row := q.db.QueryRowContext(ctx, createBag, arg.ID, pq.Array(arg.ItemID), arg.Totalvalue)
+	row := q.db.QueryRowContext(ctx, createBag, arg.ID, arg.Totalvalue)
 	var i Bag
-	err := row.Scan(&i.ID, pq.Array(&i.ItemID), &i.Totalvalue)
+	err := row.Scan(&i.ID, &i.Totalvalue)
 	return i, err
 }
 
 const getBagbyID = `-- name: GetBagbyID :one
-SELECT id, item_id, totalvalue
+SELECT id, totalvalue
 FROM Bag
 WHERE Id = $1
 `
@@ -40,27 +38,25 @@ WHERE Id = $1
 func (q *Queries) GetBagbyID(ctx context.Context, id uuid.UUID) (Bag, error) {
 	row := q.db.QueryRowContext(ctx, getBagbyID, id)
 	var i Bag
-	err := row.Scan(&i.ID, pq.Array(&i.ItemID), &i.Totalvalue)
+	err := row.Scan(&i.ID, &i.Totalvalue)
 	return i, err
 }
 
 const updateBag = `-- name: UpdateBag :one
 UPDATE Bag
-SET Item_id = $2,
-    TotalValue = $3
+SET TotalValue = $2
 WHERE Id = $1
-RETURNING id, item_id, totalvalue
+RETURNING id, totalvalue
 `
 
 type UpdateBagParams struct {
 	ID         uuid.UUID
-	ItemID     []uuid.UUID
 	Totalvalue float64
 }
 
 func (q *Queries) UpdateBag(ctx context.Context, arg UpdateBagParams) (Bag, error) {
-	row := q.db.QueryRowContext(ctx, updateBag, arg.ID, pq.Array(arg.ItemID), arg.Totalvalue)
+	row := q.db.QueryRowContext(ctx, updateBag, arg.ID, arg.Totalvalue)
 	var i Bag
-	err := row.Scan(&i.ID, pq.Array(&i.ItemID), &i.Totalvalue)
+	err := row.Scan(&i.ID, &i.Totalvalue)
 	return i, err
 }

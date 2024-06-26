@@ -28,7 +28,6 @@ func (cfg *Server) CreateBag(w http.ResponseWriter, r *http.Request) {
 
 	bagDb, err := cfg.DB.CreateBag(r.Context(), database.CreateBagParams{
 		ID:         bag.ID,
-		ItemID:     bag.Items,
 		Totalvalue: 0.0,
 	})
 

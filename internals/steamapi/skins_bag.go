@@ -25,45 +25,23 @@ func CreateBag(name string) Bag {
 
 }
 
-func AddItemtoBag(bag database.Bag, item database.GetLatestPriceRow) Bag {
-	bag.ItemID = append(bag.ItemID, item.ItemID)
-
-	totalPrice := addPrice(item.Price, bag.Totalvalue)
-	updatedBag := &Bag{
-		ID:         bag.ID,
-		Items:      bag.ItemID,
-		TotalPrice: totalPrice,
-	}
-
-	return *updatedBag
+func AddItemtoBag(bag database.BagItem, item database.GetLatestPriceRow) {
 
 }
 
 func RemoveItemFromBag(bag database.Bag, item database.GetLatestPriceRow) Bag {
-	var newItemList []uuid.UUID
-	for i, id := range bag.ItemID {
-		if id == item.ItemID {
-			newItemList = append(bag.ItemID[:i], bag.ItemID[i+1:]...)
-		}
-	}
 
-	return Bag{
-		ID:         bag.ID,
-		Items:      newItemList,
-		TotalPrice: 0.0,
-	}
+	return Bag{}
 }
 
-func addPrice(itemPrice, total float64) float64 {
+func addPrice(itemPrice, total float64, amount int32) float64 {
 
 	total += itemPrice
 	return total
 }
 
-/*
+func SubPrice(itemPrice, total float64, amount int32) float64 {
 
-1- add item to the bag
-	- check if the bag exists
-	- proceed to add the item
-	- add the price to the total of the bag.
-*/
+	total -= itemPrice
+	return total
+}

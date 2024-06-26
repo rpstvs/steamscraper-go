@@ -1,11 +1,10 @@
 -- name: CreateBag :one
-INSERT INTO Bag (Id, Item_id, TotalValue)
-VALUES ($1, $2, $3)
+INSERT INTO Bag (Id, TotalValue)
+VALUES ($1, $2)
 RETURNING *;
 -- name: UpdateBag :one
 UPDATE Bag
-SET Item_id = $2,
-    TotalValue = $3
+SET TotalValue = $2
 WHERE Id = $1
 RETURNING *;
 -- name: GetBagbyID :one

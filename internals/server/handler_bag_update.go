@@ -8,13 +8,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rpstvs/steamscraper-go/internals/database"
-	"github.com/rpstvs/steamscraper-go/internals/steamapi"
 )
+
+type response struct {
+	Bagid      uuid.UUID `json:"bagid"`
+	Totalvalue float64   `json:"totalvalue"`
+	Items      struct {
+		Itemid uuid.UUID `json:"itemid"`
+		Amount int32     `json:"amount"`
+	} `json:"items"`
+}
 
 func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		SkinName string    `json:"skinName"`
 		IdBag    uuid.UUID `json:"idbag"`
+		Amount   int32     `json:"amount"`
 	}
 	decoder := json.NewDecoder(r.Body)
 	params := &parameters{}
@@ -45,15 +54,23 @@ func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updatedBag := steamapi.AddItemtoBag(bag, itemPrice)
-
-	cfg.DB.UpdateBag(context.Background(), database.UpdateBagParams{
-		ID:         updatedBag.ID,
-		ItemID:     updatedBag.Items,
-		Totalvalue: updatedBag.TotalPrice,
+	cfg.DB.AddItem(r.Context(), database.AddItemParams{
+		BagID:  bag.ID,
+		ItemID: id,
+		Amount: params.Amount,
 	})
 
-	RespondWithJson(w, http.StatusOK, updatedBag)
+	RespondWithJson(w, http.StatusOK, response{
+		Bagid:      bag.ID,
+		Totalvalue: itemPrice.Price,
+		Items: struct {
+			Itemid uuid.UUID "json:\"itemid\""
+			Amount int32     "json:\"amount\""
+		}{
+			Itemid: id,
+			Amount: 3,
+		},
+	})
 
 }
 
@@ -91,14 +108,21 @@ func (cfg *Server) RemoveItemBag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updatedBag := steamapi.AddItemtoBag(bag, itemPrice)
-
 	cfg.DB.UpdateBag(context.Background(), database.UpdateBagParams{
-		ID:         updatedBag.ID,
-		ItemID:     updatedBag.Items,
-		Totalvalue: updatedBag.TotalPrice,
+		ID:         bag.ID,
+		Totalvalue: bag.Totalvalue,
 	})
 
-	RespondWithJson(w, http.StatusOK, updatedBag)
+	RespondWithJson(w, http.StatusOK, response{
+		Bagid:      bag.ID,
+		Totalvalue: itemPrice.Price,
+		Items: struct {
+			Itemid uuid.UUID "json:\"itemid\""
+			Amount int32     "json:\"amount\""
+		}{
+			Itemid: id,
+			Amount: 3,
+		},
+	})
 
 }

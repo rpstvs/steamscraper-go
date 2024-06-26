@@ -12,8 +12,13 @@ import (
 
 type Bag struct {
 	ID         uuid.UUID
-	ItemID     []uuid.UUID
 	Totalvalue float64
+}
+
+type BagItem struct {
+	BagID  uuid.UUID
+	ItemID uuid.UUID
+	Amount int32
 }
 
 type Item struct {

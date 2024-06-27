@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rpstvs/steamscraper-go/internals/database"
+	"github.com/rpstvs/steamscraper-go/internals/steamapi"
 )
 
 type response struct {
@@ -54,21 +55,28 @@ func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	newTotal := steamapi.AddPrice(itemPrice.Price, bag.Totalvalue, params.Amount)
+
 	cfg.DB.AddItem(r.Context(), database.AddItemParams{
 		BagID:  bag.ID,
 		ItemID: id,
 		Amount: params.Amount,
 	})
 
+	cfg.DB.UpdateBag(r.Context(), database.UpdateBagParams{
+		ID:         bag.ID,
+		Totalvalue: newTotal,
+	})
+
 	RespondWithJson(w, http.StatusOK, response{
 		Bagid:      bag.ID,
-		Totalvalue: itemPrice.Price,
+		Totalvalue: newTotal,
 		Items: struct {
 			Itemid uuid.UUID "json:\"itemid\""
 			Amount int32     "json:\"amount\""
 		}{
 			Itemid: id,
-			Amount: 3,
+			Amount: params.Amount,
 		},
 	})
 

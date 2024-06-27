@@ -34,14 +34,14 @@ func RemoveItemFromBag(bag database.Bag, item database.GetLatestPriceRow) Bag {
 	return Bag{}
 }
 
-func AddPrice(itemPrice, total float64, amount int32) float64 {
-
+func AddPrice(itemPrice, total float64, amount, numItems int32) (float64, int32) {
+	newAmount := numItems + amount
 	total += itemPrice * float64(amount)
-	return total
+	return total, newAmount
 }
 
-func SubPrice(itemPrice, total float64, amount int32) float64 {
-
-	total -= itemPrice
-	return total
+func SubPrice(itemPrice, total float64, numItems, amount int32) (float64, int32) {
+	amountDif := numItems - amount
+	total -= itemPrice * float64(amount)
+	return total, amountDif
 }

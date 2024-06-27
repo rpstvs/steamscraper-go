@@ -40,4 +40,5 @@ func (srv *Server) RegisterEndpoints() {
 	srv.mux.HandleFunc("/v1/api/price", srv.GetLatestPrice)
 	srv.mux.HandleFunc("/v1/api/bag/create", srv.CreateBag)
 	srv.mux.HandleFunc("/v1/api/bag/additem", srv.AddItemBag)
+	srv.mux.HandleFunc("/v1/api/bag/removeitem", srv.RemoveItemBag)
 }

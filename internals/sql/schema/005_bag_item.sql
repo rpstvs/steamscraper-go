@@ -1,3 +1,4 @@
+-- +goose Up
 CREATE TABLE Bag_item (
     Bag_id UUID NOT NULL REFERENCES Bag(Id),
     Item_id UUID NOT NULL REFERENCES Items(Id),

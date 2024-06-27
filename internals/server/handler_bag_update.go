@@ -55,12 +55,25 @@ func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newTotal := steamapi.AddPrice(itemPrice.Price, bag.Totalvalue, params.Amount)
-
-	cfg.DB.AddItem(r.Context(), database.AddItemParams{
+	amountInBag, err := cfg.DB.GetBagItem(r.Context(), database.GetBagItemParams{
 		BagID:  bag.ID,
 		ItemID: id,
-		Amount: params.Amount,
+	})
+
+	if amountInBag == 0 {
+		cfg.DB.AddItem(r.Context(), database.AddItemParams{
+			BagID:  bag.ID,
+			ItemID: id,
+			Amount: params.Amount,
+		})
+		return
+	}
+
+	newTotal, newAmount := steamapi.AddPrice(itemPrice.Price, bag.Totalvalue, params.Amount, amountInBag)
+
+	cfg.DB.UpdateBagItem(r.Context(), database.UpdateBagItemParams{
+		BagID:  bag.ID,
+		Amount: newAmount,
 	})
 
 	cfg.DB.UpdateBag(r.Context(), database.UpdateBagParams{
@@ -76,7 +89,7 @@ func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request) {
 			Amount int32     "json:\"amount\""
 		}{
 			Itemid: id,
-			Amount: params.Amount,
+			Amount: newAmount,
 		},
 	})
 
@@ -86,6 +99,7 @@ func (cfg *Server) RemoveItemBag(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		SkinName string    `json:"skinName"`
 		IdBag    uuid.UUID `json:"idbag"`
+		Amount   int32     `json:"Amount"`
 	}
 	decoder := json.NewDecoder(r.Body)
 	params := &parameters{}
@@ -116,20 +130,37 @@ func (cfg *Server) RemoveItemBag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	amountInBag, err := cfg.DB.GetBagItem(r.Context(), database.GetBagItemParams{
+		BagID:  bag.ID,
+		ItemID: id,
+	})
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	newTotal, newAmount := steamapi.SubPrice(itemPrice.Price, bag.Totalvalue, amountInBag, params.Amount)
+
+	if newAmount == 0 {
+		//implementação para remover o item da bag
+		return
+	}
+
 	cfg.DB.UpdateBag(context.Background(), database.UpdateBagParams{
 		ID:         bag.ID,
-		Totalvalue: bag.Totalvalue,
+		Totalvalue: newTotal,
 	})
 
 	RespondWithJson(w, http.StatusOK, response{
 		Bagid:      bag.ID,
-		Totalvalue: itemPrice.Price,
+		Totalvalue: newTotal,
 		Items: struct {
 			Itemid uuid.UUID "json:\"itemid\""
 			Amount int32     "json:\"amount\""
 		}{
 			Itemid: id,
-			Amount: 3,
+			Amount: newAmount,
 		},
 	})
 

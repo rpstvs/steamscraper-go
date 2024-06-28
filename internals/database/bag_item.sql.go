@@ -30,6 +30,25 @@ func (q *Queries) AddItem(ctx context.Context, arg AddItemParams) (BagItem, erro
 	return i, err
 }
 
+const deleteItem = `-- name: DeleteItem :one
+DELETE FROM Bag_item
+WHERE Bag_id = $1
+    AND Item_id = $2
+RETURNING bag_id, item_id, amount
+`
+
+type DeleteItemParams struct {
+	BagID  uuid.UUID
+	ItemID uuid.UUID
+}
+
+func (q *Queries) DeleteItem(ctx context.Context, arg DeleteItemParams) (BagItem, error) {
+	row := q.db.QueryRowContext(ctx, deleteItem, arg.BagID, arg.ItemID)
+	var i BagItem
+	err := row.Scan(&i.BagID, &i.ItemID, &i.Amount)
+	return i, err
+}
+
 const getBagItem = `-- name: GetBagItem :one
 SELECT Amount
 From Bag_item
@@ -53,16 +72,18 @@ const updateBagItem = `-- name: UpdateBagItem :one
 UPDATE Bag_item
 SET Amount = $2
 WHERE Bag_id = $1
+    AND Item_id = $3
 RETURNING bag_id, item_id, amount
 `
 
 type UpdateBagItemParams struct {
 	BagID  uuid.UUID
 	Amount int32
+	ItemID uuid.UUID
 }
 
 func (q *Queries) UpdateBagItem(ctx context.Context, arg UpdateBagItemParams) (BagItem, error) {
-	row := q.db.QueryRowContext(ctx, updateBagItem, arg.BagID, arg.Amount)
+	row := q.db.QueryRowContext(ctx, updateBagItem, arg.BagID, arg.Amount, arg.ItemID)
 	var i BagItem
 	err := row.Scan(&i.BagID, &i.ItemID, &i.Amount)
 	return i, err

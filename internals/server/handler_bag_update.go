@@ -143,13 +143,28 @@ func (cfg *Server) RemoveItemBag(w http.ResponseWriter, r *http.Request) {
 	newTotal, newAmount := steamapi.SubPrice(itemPrice.Price, bag.Totalvalue, amountInBag, params.Amount)
 
 	if newAmount == 0 {
-		//implementação para remover o item da bag
+		cfg.DB.UpdateBag(r.Context(), database.UpdateBagParams{
+			ID:         bag.ID,
+			Totalvalue: newTotal,
+		})
+
+		cfg.DB.DeleteItem(r.Context(), database.DeleteItemParams{
+			BagID:  bag.ID,
+			ItemID: id,
+		})
+		fmt.Println("item apagado.-")
 		return
 	}
 
-	cfg.DB.UpdateBag(context.Background(), database.UpdateBagParams{
+	cfg.DB.UpdateBag(r.Context(), database.UpdateBagParams{
 		ID:         bag.ID,
 		Totalvalue: newTotal,
+	})
+
+	cfg.DB.UpdateBagItem(r.Context(), database.UpdateBagItemParams{
+		BagID:  bag.ID,
+		Amount: newAmount,
+		ItemID: id,
 	})
 
 	RespondWithJson(w, http.StatusOK, response{

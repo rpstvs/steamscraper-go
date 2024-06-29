@@ -11,20 +11,11 @@ import (
 	"github.com/rpstvs/steamscraper-go/internals/steamapi"
 )
 
-type response struct {
-	Bagid      uuid.UUID `json:"bagid"`
-	Totalvalue float64   `json:"totalvalue"`
-	Items      struct {
-		Itemid uuid.UUID `json:"itemid"`
-		Amount int32     `json:"amount"`
-	} `json:"items"`
-}
-
-func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request) {
+func (cfg *Server) RemoveItemBag(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		SkinName string    `json:"skinName"`
 		IdBag    uuid.UUID `json:"idbag"`
-		Amount   int32     `json:"amount"`
+		Amount   int32     `json:"Amount"`
 	}
 	decoder := json.NewDecoder(r.Body)
 	params := &parameters{}
@@ -60,25 +51,41 @@ func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request) {
 		ItemID: id,
 	})
 
-	if amountInBag == 0 {
-		cfg.DB.AddItem(r.Context(), database.AddItemParams{
-			BagID:  bag.ID,
-			ItemID: id,
-			Amount: params.Amount,
-		})
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
-	newTotal, newAmount := steamapi.AddPrice(itemPrice.Price, bag.Totalvalue, params.Amount, amountInBag)
+	newTotal, newAmount := steamapi.SubPrice(itemPrice.Price, bag.Totalvalue, amountInBag, params.Amount)
 
-	cfg.DB.UpdateBagItem(r.Context(), database.UpdateBagItemParams{
-		BagID:  bag.ID,
-		Amount: newAmount,
-	})
+	if newAmount < 0 {
+		fmt.Print("no items left in the bag")
+		return
+	}
+
+	if newAmount == 0 {
+		cfg.DB.UpdateBag(r.Context(), database.UpdateBagParams{
+			ID:         bag.ID,
+			Totalvalue: newTotal,
+		})
+
+		cfg.DB.DeleteItem(r.Context(), database.DeleteItemParams{
+			BagID:  bag.ID,
+			ItemID: id,
+		})
+		fmt.Println("item apagado.-")
+		return
+	}
 
 	cfg.DB.UpdateBag(r.Context(), database.UpdateBagParams{
 		ID:         bag.ID,
 		Totalvalue: newTotal,
+	})
+
+	cfg.DB.UpdateBagItem(r.Context(), database.UpdateBagItemParams{
+		BagID:  bag.ID,
+		Amount: newAmount,
+		ItemID: id,
 	})
 
 	RespondWithJson(w, http.StatusOK, response{

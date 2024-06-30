@@ -8,3 +8,5 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/robfig/cron v1.2.0
 )
+
+require golang.org/x/oauth2 v0.21.0 // indirect

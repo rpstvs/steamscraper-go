@@ -41,4 +41,5 @@ func (srv *Server) RegisterEndpoints() {
 	srv.mux.HandleFunc("/v1/api/bag/create", srv.CreateBag)
 	srv.mux.HandleFunc("/v1/api/bag/additem", srv.AddItemBag)
 	srv.mux.HandleFunc("/v1/api/bag/removeitem", srv.RemoveItemBag)
+	srv.mux.HandleFunc("/v1/api/auth/steam", srv.loginSteam)
 }

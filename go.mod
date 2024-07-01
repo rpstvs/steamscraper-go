@@ -9,4 +9,8 @@ require (
 	github.com/robfig/cron v1.2.0
 )
 
-require golang.org/x/oauth2 v0.21.0 // indirect
+require (
+	github.com/yohcop/openid-go v1.0.1 // indirect
+	golang.org/x/net v0.7.0 // indirect
+	golang.org/x/oauth2 v0.21.0 // indirect
+)

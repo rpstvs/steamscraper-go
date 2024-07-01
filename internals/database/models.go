@@ -12,6 +12,7 @@ import (
 
 type Bag struct {
 	ID         uuid.UUID
+	UserID     uuid.UUID
 	Totalvalue float64
 }
 
@@ -33,6 +34,7 @@ type Price struct {
 }
 
 type User struct {
-	ID  uuid.UUID
-	Bag uuid.NullUUID
+	ID      uuid.UUID
+	Name    string
+	Steamid string
 }

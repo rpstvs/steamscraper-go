@@ -14,7 +14,7 @@ import (
 const createBag = `-- name: CreateBag :one
 INSERT INTO Bag (Id, TotalValue)
 VALUES ($1, $2)
-RETURNING id, totalvalue
+RETURNING id, user_id, totalvalue
 `
 
 type CreateBagParams struct {
@@ -25,12 +25,12 @@ type CreateBagParams struct {
 func (q *Queries) CreateBag(ctx context.Context, arg CreateBagParams) (Bag, error) {
 	row := q.db.QueryRowContext(ctx, createBag, arg.ID, arg.Totalvalue)
 	var i Bag
-	err := row.Scan(&i.ID, &i.Totalvalue)
+	err := row.Scan(&i.ID, &i.UserID, &i.Totalvalue)
 	return i, err
 }
 
 const getBagbyID = `-- name: GetBagbyID :one
-SELECT id, totalvalue
+SELECT id, user_id, totalvalue
 FROM Bag
 WHERE Id = $1
 `
@@ -38,7 +38,7 @@ WHERE Id = $1
 func (q *Queries) GetBagbyID(ctx context.Context, id uuid.UUID) (Bag, error) {
 	row := q.db.QueryRowContext(ctx, getBagbyID, id)
 	var i Bag
-	err := row.Scan(&i.ID, &i.Totalvalue)
+	err := row.Scan(&i.ID, &i.UserID, &i.Totalvalue)
 	return i, err
 }
 
@@ -46,7 +46,7 @@ const updateBag = `-- name: UpdateBag :one
 UPDATE Bag
 SET TotalValue = $2
 WHERE Id = $1
-RETURNING id, totalvalue
+RETURNING id, user_id, totalvalue
 `
 
 type UpdateBagParams struct {
@@ -57,6 +57,6 @@ type UpdateBagParams struct {
 func (q *Queries) UpdateBag(ctx context.Context, arg UpdateBagParams) (Bag, error) {
 	row := q.db.QueryRowContext(ctx, updateBag, arg.ID, arg.Totalvalue)
 	var i Bag
-	err := row.Scan(&i.ID, &i.Totalvalue)
+	err := row.Scan(&i.ID, &i.UserID, &i.Totalvalue)
 	return i, err
 }

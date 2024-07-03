@@ -73,3 +73,25 @@ type SearchResult struct {
 		SalePriceText string `json:"sale_price_text"`
 	} `json:"results"`
 }
+
+type SteamProfile struct {
+	Response struct {
+		Players []struct {
+			Steamid                  string `json:"steamid"`
+			Communityvisibilitystate int    `json:"communityvisibilitystate"`
+			Profilestate             int    `json:"profilestate"`
+			Personaname              string `json:"personaname"`
+			Profileurl               string `json:"profileurl"`
+			Avatar                   string `json:"avatar"`
+			Avatarmedium             string `json:"avatarmedium"`
+			Avatarfull               string `json:"avatarfull"`
+			Avatarhash               string `json:"avatarhash"`
+			Lastlogoff               int    `json:"lastlogoff"`
+			Personastate             int    `json:"personastate"`
+			Primaryclanid            string `json:"primaryclanid"`
+			Timecreated              int    `json:"timecreated"`
+			Personastateflags        int    `json:"personastateflags"`
+			Loccountrycode           string `json:"loccountrycode"`
+		} `json:"players"`
+	} `json:"response"`
+}

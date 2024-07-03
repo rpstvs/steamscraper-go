@@ -1,6 +1,9 @@
 package utils
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 func ConvertDate() time.Time {
 	currentTime := time.Now()
@@ -9,4 +12,10 @@ func ConvertDate() time.Time {
 	currentDate := currentTime.Truncate(24 * time.Hour)
 
 	return currentDate
+}
+
+func ExtractSteamid(steamid string) string {
+	tmp := strings.Split(steamid, "/")
+	id := tmp[len(tmp)-1]
+	return id
 }

@@ -37,4 +37,5 @@ type User struct {
 	ID      uuid.UUID
 	Name    string
 	Steamid string
+	Bag     []interface{}
 }

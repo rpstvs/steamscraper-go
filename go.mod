@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 	github.com/yohcop/openid-go v1.0.1 // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect

@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -24,15 +25,17 @@ func CreateToken(name string) string {
 	return tokenString
 }
 
-func ValidateToken(tokenString, tokenSecret string) {
+func ValidateToken(tokenString string) error {
+	tokenSecret := os.Getenv("TOKEN_SECRET")
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(tokenSecret), nil
 	})
 	if err != nil {
 		fmt.Println("couldnt parse the token")
-		return
+		return errors.New("couldnt parse token")
 	}
 	if !token.Valid {
-		return
+		return errors.New("token not valid")
 	}
+	return nil
 }

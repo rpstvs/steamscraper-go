@@ -46,6 +46,8 @@ func (cfg *Server) loginSteam(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, cookie)
 
+	fmt.Println(cookie.Expires)
+
 	RespondWithJson(w, http.StatusOK, User{
 		Name: name,
 	})

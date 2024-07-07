@@ -7,7 +7,7 @@ import (
 	"github.com/rpstvs/steamscraper-go/internals/auth"
 )
 
-func (srv *Server) middlewareAuth(next http.Handler) http.HandlerFunc {
+func (srv *Server) middlewareAuth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("rpstvs")
 

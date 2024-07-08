@@ -5,9 +5,12 @@ import (
 	"net/http"
 )
 
-func (srv *Server) showprofile(w http.ResponseWriter, r *http.Request) {
+func (srv *Server) ShowProfile(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("estamos in")
-	RespondWithJson(w, http.StatusOK, User{
-		Name: "Bem jogado",
-	})
+
+}
+
+func (srv *Server) ShowBags(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("estamos in")
+
 }

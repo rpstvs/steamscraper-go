@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -14,10 +15,10 @@ func CreateCookie(w http.ResponseWriter, name, id string) {
 
 		Name:    name,
 		Value:   token,
-		Expires: time.Now().UTC().Add(24 * time.Hour),
+		Expires: time.Unix(time.Now().UTC().Add(24*time.Second).Unix(), 0),
 	}
+	fmt.Println(cookie)
 
 	http.SetCookie(w, cookie)
 
-	return
 }

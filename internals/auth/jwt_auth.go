@@ -35,6 +35,7 @@ func ValidateToken(tokenString string) error {
 		return errors.New("couldnt parse token")
 	}
 	if !token.Valid {
+		fmt.Println("Token not valid")
 		return errors.New("token not valid")
 	}
 	return nil

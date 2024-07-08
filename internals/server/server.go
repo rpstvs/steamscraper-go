@@ -27,8 +27,6 @@ func ReturnServer() *http.Server {
 
 	NewServer.RegisterEndpoints()
 
-	//NewServer.mux.HandleFunc("GET /v1/api/search", NewServer.GetPrice)
-
 	return &http.Server{
 		Addr:    ":" + Port,
 		Handler: cors,
@@ -42,5 +40,6 @@ func (srv *Server) RegisterEndpoints() {
 	srv.mux.HandleFunc("/v1/api/bag/additem", srv.AddItemBag)
 	srv.mux.HandleFunc("/v1/api/bag/removeitem", srv.RemoveItemBag)
 	srv.mux.HandleFunc("/v1/api/auth/steam", srv.loginSteam)
-	srv.mux.HandleFunc("/v1/api/profile", srv.middlewareAuth(srv.showprofile))
+	srv.mux.HandleFunc("/v1/api/profile", srv.middlewareAuth(srv.ShowProfile))
+	srv.mux.HandleFunc("/v1/api/bags", srv.middlewareAuth(srv.ShowBags))
 }

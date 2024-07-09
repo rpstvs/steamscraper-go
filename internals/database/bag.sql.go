@@ -12,18 +12,19 @@ import (
 )
 
 const createBag = `-- name: CreateBag :one
-INSERT INTO Bag (Id, TotalValue)
-VALUES ($1, $2)
+INSERT INTO Bag (Id, TotalValue, User_id)
+VALUES ($1, $2, $3)
 RETURNING id, user_id, totalvalue
 `
 
 type CreateBagParams struct {
 	ID         uuid.UUID
 	Totalvalue float64
+	UserID     uuid.UUID
 }
 
 func (q *Queries) CreateBag(ctx context.Context, arg CreateBagParams) (Bag, error) {
-	row := q.db.QueryRowContext(ctx, createBag, arg.ID, arg.Totalvalue)
+	row := q.db.QueryRowContext(ctx, createBag, arg.ID, arg.Totalvalue, arg.UserID)
 	var i Bag
 	err := row.Scan(&i.ID, &i.UserID, &i.Totalvalue)
 	return i, err

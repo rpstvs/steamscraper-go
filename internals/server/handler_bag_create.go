@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/rpstvs/steamscraper-go/internals/database"
 	"github.com/rpstvs/steamscraper-go/internals/steamapi"
 )
 
 func (cfg *Server) CreateBag(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
-		Name string `json:"name"`
+		Name   string    `json:"name"`
+		Userid uuid.UUID `json:"userid"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -29,6 +31,7 @@ func (cfg *Server) CreateBag(w http.ResponseWriter, r *http.Request) {
 	bagDb, err := cfg.DB.CreateBag(r.Context(), database.CreateBagParams{
 		ID:         bag.ID,
 		Totalvalue: 0.0,
+		UserID:     params.Userid,
 	})
 
 	if err != nil {

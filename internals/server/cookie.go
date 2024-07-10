@@ -8,14 +8,14 @@ import (
 	"github.com/rpstvs/steamscraper-go/internals/auth"
 )
 
-func CreateCookie(w http.ResponseWriter, name, id string) {
+func CreateCookie(w http.ResponseWriter, id string) {
 	token := auth.CreateToken(id)
 
 	cookie := &http.Cookie{
 
-		Name:    name,
+		Name:    "SkinsApp",
 		Value:   token,
-		Expires: time.Unix(time.Now().UTC().Add(24*time.Second).Unix(), 0),
+		Expires: time.Unix(time.Now().UTC().Add(24*time.Hour).Unix(), 0),
 	}
 	fmt.Println(cookie)
 

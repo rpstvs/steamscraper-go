@@ -10,8 +10,9 @@ import (
 
 func (srv *Server) middlewareAuth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("rpstvs")
 
+		cookie, err := r.Cookie("SkinsApp")
+		fmt.Println(cookie)
 		if err != nil {
 			println("couldnt get cookie")
 			return

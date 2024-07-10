@@ -33,7 +33,7 @@ func (cfg *Server) loginSteam(w http.ResponseWriter, r *http.Request) {
 			Steamid: id,
 		})
 
-		CreateCookie(w, name, id)
+		CreateCookie(w, id)
 		http.Redirect(w, r, "/v1/api/profile", http.StatusTemporaryRedirect)
 	}
 

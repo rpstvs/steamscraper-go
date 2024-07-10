@@ -36,9 +36,9 @@ func ReturnServer() *http.Server {
 func (srv *Server) RegisterEndpoints() {
 
 	srv.mux.HandleFunc("/v1/api/price", srv.GetLatestPrice)
-	srv.mux.HandleFunc("/v1/api/bag/create", srv.CreateBag)
-	srv.mux.HandleFunc("/v1/api/bag/additem", srv.AddItemBag)
-	srv.mux.HandleFunc("/v1/api/bag/removeitem", srv.RemoveItemBag)
+	srv.mux.HandleFunc("/v1/api/bag/create", srv.middlewareAuth(srv.CreateBag))
+	srv.mux.HandleFunc("/v1/api/bag/additem", srv.middlewareAuth(srv.AddItemBag))
+	srv.mux.HandleFunc("/v1/api/bag/removeitem", srv.middlewareAuth(srv.RemoveItemBag))
 	srv.mux.HandleFunc("/v1/api/auth/steam", srv.loginSteam)
 	srv.mux.HandleFunc("/v1/api/profile", srv.middlewareAuth(srv.ShowProfile))
 	srv.mux.HandleFunc("/v1/api/bags", srv.middlewareAuth(srv.ShowBags))

@@ -9,13 +9,12 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO Users (Id, Name, SteamID)
 VALUES ($1, $2, $3)
-RETURNING id, name, steamid, bag
+RETURNING id, name, steamid
 `
 
 type CreateUserParams struct {
@@ -27,17 +26,12 @@ type CreateUserParams struct {
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, createUser, arg.ID, arg.Name, arg.Steamid)
 	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Steamid,
-		pq.Array(&i.Bag),
-	)
+	err := row.Scan(&i.ID, &i.Name, &i.Steamid)
 	return i, err
 }
 
 const getUserbyId = `-- name: GetUserbyId :one
-SELECT id, name, steamid, bag
+SELECT id, name, steamid
 FROM Users
 WHERE SteamID = $1
 `
@@ -45,11 +39,6 @@ WHERE SteamID = $1
 func (q *Queries) GetUserbyId(ctx context.Context, steamid string) (User, error) {
 	row := q.db.QueryRowContext(ctx, getUserbyId, steamid)
 	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Steamid,
-		pq.Array(&i.Bag),
-	)
+	err := row.Scan(&i.ID, &i.Name, &i.Steamid)
 	return i, err
 }

@@ -66,6 +66,14 @@ func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request) {
 			ItemID: id,
 			Amount: params.Amount,
 		})
+
+		newTotal, _ := steamapi.AddPrice(itemPrice.Price, bag.Totalvalue, params.Amount, amountInBag)
+
+		cfg.DB.UpdateBag(r.Context(), database.UpdateBagParams{
+			ID:         bag.ID,
+			Totalvalue: newTotal,
+		})
+
 		return
 	}
 

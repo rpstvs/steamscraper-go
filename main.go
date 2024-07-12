@@ -26,6 +26,6 @@ func main() {
 	c.Start()
 
 	//steamClient.UpdateDB(0)
-	server.ListenAndServe()
+	server.Start()
 
 }

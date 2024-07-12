@@ -37,6 +37,7 @@ func (cfg *Server) loginSteam(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/v1/api/profile", http.StatusTemporaryRedirect)
 	}
 
+	CreateCookie(w, id)
 	http.Redirect(w, r, "/v1/api/profile", http.StatusTemporaryRedirect)
 
 }

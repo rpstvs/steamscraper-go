@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -18,7 +17,6 @@ func CreateCookie(w http.ResponseWriter, id string) {
 		Secure:   true,
 		HttpOnly: true,
 	}
-	fmt.Println(cookie)
 
 	http.SetCookie(w, cookie)
 

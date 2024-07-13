@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -48,7 +47,7 @@ func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("couldnt find the skin")
 	}
 
-	itemPrice, err := cfg.DB.GetLatestPrice(context.Background(), id)
+	itemPrice, err := cfg.DB.GetLatestPrice(r.Context(), id)
 
 	if err != nil {
 		fmt.Println("couldnt retrive the latest price")
@@ -81,6 +80,7 @@ func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request) {
 
 	cfg.DB.UpdateBagItem(r.Context(), database.UpdateBagItemParams{
 		BagID:  bag.ID,
+		ItemID: id,
 		Amount: newAmount,
 	})
 

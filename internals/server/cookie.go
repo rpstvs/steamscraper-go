@@ -16,6 +16,7 @@ func CreateCookie(w http.ResponseWriter, id string) {
 		Expires:  time.Now().UTC().Add(24 * time.Hour),
 		Secure:   true,
 		HttpOnly: true,
+		Path:     "/",
 	}
 
 	http.SetCookie(w, cookie)

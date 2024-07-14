@@ -27,7 +27,6 @@ func ReturnServer() *Server {
 		DB:   dbQueries,
 		Port: Port,
 	}
-	//cors := middlewareCors(&NewServer.mux)
 
 	return &NewServer
 }

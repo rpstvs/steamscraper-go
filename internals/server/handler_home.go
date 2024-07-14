@@ -1,13 +1,17 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 )
 
 func (srv *Server) home(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("helloworld")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Hello World"))
+
+	cookie, err := r.Cookie("SkinsApp")
+
+	if err == nil && cookie.Value != "" {
+		http.Redirect(w, r, "/v1/api/profile", http.StatusPermanentRedirect)
+	}
+
+	w.Write([]byte("Welcome to the app"))
 
 }

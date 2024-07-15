@@ -5,9 +5,12 @@ import (
 	"net/http"
 
 	"github.com/rpstvs/steamscraper-go/internals/auth"
+	"github.com/rpstvs/steamscraper-go/internals/database"
 )
 
-func (srv *Server) middlewareAuth(next http.HandlerFunc) http.HandlerFunc {
+type authHandler func(http.ResponseWriter, *http.Request, database.User)
+
+func (srv *Server) middlewareAuth(handler authHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		cookie, err := r.Cookie("SkinsApp")
@@ -22,7 +25,11 @@ func (srv *Server) middlewareAuth(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		steamid := auth.GetSubject(cookie.Value)
+
+		user, _ := srv.DB.GetUserbyId(r.Context(), steamid)
+
+		handler(w, r, user)
 
 	}
 }

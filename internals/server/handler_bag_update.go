@@ -19,7 +19,7 @@ type response struct {
 	} `json:"items"`
 }
 
-func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request) {
+func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request, user database.User) {
 	type parameters struct {
 		SkinName string    `json:"skinName"`
 		IdBag    uuid.UUID `json:"idbag"`

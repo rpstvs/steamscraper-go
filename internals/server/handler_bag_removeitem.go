@@ -11,7 +11,7 @@ import (
 	"github.com/rpstvs/steamscraper-go/internals/steamapi"
 )
 
-func (cfg *Server) RemoveItemBag(w http.ResponseWriter, r *http.Request) {
+func (cfg *Server) RemoveItemBag(w http.ResponseWriter, r *http.Request, user database.User) {
 	type parameters struct {
 		SkinName string    `json:"skinName"`
 		IdBag    uuid.UUID `json:"idbag"`

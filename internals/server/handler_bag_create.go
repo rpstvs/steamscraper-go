@@ -10,7 +10,7 @@ import (
 	"github.com/rpstvs/steamscraper-go/internals/steamapi"
 )
 
-func (cfg *Server) CreateBag(w http.ResponseWriter, r *http.Request) {
+func (cfg *Server) CreateBag(w http.ResponseWriter, r *http.Request, user database.User) {
 	type parameters struct {
 		Name   string    `json:"name"`
 		Userid uuid.UUID `json:"userid"`

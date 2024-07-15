@@ -30,6 +30,7 @@ func ValidateToken(tokenString string) error {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(tokenSecret), nil
 	})
+
 	if err != nil {
 		fmt.Println("couldnt parse the token")
 		return errors.New("couldnt parse token")
@@ -39,4 +40,24 @@ func ValidateToken(tokenString string) error {
 		return errors.New("token not valid")
 	}
 	return nil
+}
+
+func GetSubject(tokenstring string) string {
+	tokenSecret := os.Getenv("TOKEN_SECRET")
+	token, err := jwt.Parse(tokenstring, func(token *jwt.Token) (interface{}, error) {
+		return []byte(tokenSecret), nil
+	})
+
+	if err != nil {
+		fmt.Println("couldnt parse the token")
+		return "coudlnt parse token"
+	}
+	if !token.Valid {
+		fmt.Println("Token not valid")
+		return "token not valid"
+	}
+
+	steamid, _ := token.Claims.GetSubject()
+
+	return steamid
 }

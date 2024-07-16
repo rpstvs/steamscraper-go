@@ -1,6 +1,6 @@
 -- +goose Up
-CREATE TABLE Bag (
-    Id UUID PRIMARY KEY,
+CREATE TABLE Bag(
+    Id UUID UNIQUE PRIMARY KEY,
     User_id UUID NOT NULL REFERENCES Users(Id),
     TotalValue DECIMAL(10, 2) NOT NULL,
     Created_at TIMESTAMP NOT NULL,

@@ -1,5 +1,5 @@
 -- +goose Up
-CREATE TABLE Users (
+CREATE TABLE Users(
     Id UUID PRIMARY KEY UNIQUE,
     Name TEXT NOT NULL,
     SteamID TEXT NOT NULL UNIQUE,

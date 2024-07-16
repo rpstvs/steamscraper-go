@@ -14,6 +14,8 @@ type Bag struct {
 	ID         uuid.UUID
 	UserID     uuid.UUID
 	Totalvalue float64
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 type BagItem struct {
@@ -34,7 +36,9 @@ type Price struct {
 }
 
 type User struct {
-	ID      uuid.UUID
-	Name    string
-	Steamid string
+	ID        uuid.UUID
+	Name      string
+	Steamid   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

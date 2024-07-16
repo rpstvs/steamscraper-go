@@ -11,3 +11,7 @@ RETURNING *;
 SELECT *
 FROM Bag
 WHERE Id = $1;
+-- name: GetBagsByUser :many
+SELECT *
+FROM Bag
+Where User_id = $1;

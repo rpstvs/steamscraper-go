@@ -5,4 +5,5 @@ RETURNING *;
 -- name: GetUserbyId :one
 SELECT *
 FROM Users
-WHERE SteamID = $1;
+WHERE SteamID = $1
+RETURNING *;

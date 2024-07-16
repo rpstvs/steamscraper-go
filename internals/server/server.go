@@ -40,7 +40,6 @@ func (srv *Server) Start() {
 	mux.HandleFunc("/v1/api/bag/removeitem", srv.middlewareAuth(srv.RemoveItemBag))
 	mux.HandleFunc("/v1/api/auth/steam", srv.loginSteamCallback)
 	mux.HandleFunc("/v1/api/profile", srv.middlewareAuth(srv.ShowProfile))
-	mux.HandleFunc("/v1/api/bags", srv.middlewareAuth(srv.ShowBags))
 
 	c := cors.New(cors.Options{
 		AllowCredentials: true,
@@ -58,5 +57,5 @@ func (srv *Server) RegisterEndpoints() {
 	srv.mux.HandleFunc("/v1/api/bag/removeitem", srv.middlewareAuth(srv.RemoveItemBag))
 	srv.mux.HandleFunc("/v1/api/auth/steam", srv.loginSteamCallback)
 	srv.mux.HandleFunc("/v1/api/profile", srv.middlewareAuth(srv.ShowProfile))
-	srv.mux.HandleFunc("/v1/api/bags", srv.middlewareAuth(srv.ShowBags))
+
 }

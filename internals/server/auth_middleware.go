@@ -27,7 +27,13 @@ func (srv *Server) middlewareAuth(handler authHandler) http.HandlerFunc {
 
 		steamid := auth.GetSubject(cookie.Value)
 
-		user, _ := srv.DB.GetUserbyId(r.Context(), steamid)
+		user, err := srv.DB.GetUserbyId(r.Context(), steamid)
+
+		if err != nil {
+			fmt.Println("no user")
+		}
+
+		fmt.Println(steamid)
 
 		handler(w, r, user)
 

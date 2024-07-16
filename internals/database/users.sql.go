@@ -14,7 +14,7 @@ import (
 const createUser = `-- name: CreateUser :one
 INSERT INTO Users (Id, Name, SteamID)
 VALUES ($1, $2, $3)
-RETURNING id, name, steamid
+RETURNING id, name, steamid, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -26,12 +26,18 @@ type CreateUserParams struct {
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, createUser, arg.ID, arg.Name, arg.Steamid)
 	var i User
-	err := row.Scan(&i.ID, &i.Name, &i.Steamid)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Steamid,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
 	return i, err
 }
 
 const getUserbyId = `-- name: GetUserbyId :one
-SELECT id, name, steamid
+SELECT id, name, steamid, created_at, updated_at
 FROM Users
 WHERE SteamID = $1
 `
@@ -39,6 +45,12 @@ WHERE SteamID = $1
 func (q *Queries) GetUserbyId(ctx context.Context, steamid string) (User, error) {
 	row := q.db.QueryRowContext(ctx, getUserbyId, steamid)
 	var i User
-	err := row.Scan(&i.ID, &i.Name, &i.Steamid)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Steamid,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
 	return i, err
 }

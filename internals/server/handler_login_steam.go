@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -19,11 +18,11 @@ type User struct {
 
 func (cfg *Server) loginSteamCallback(w http.ResponseWriter, r *http.Request) {
 	fullURL := "http://" + r.Host + r.RequestURI
-	fmt.Println(fullURL)
+
 	urlParsed, _ := url.Parse(fullURL)
-	fmt.Println(urlParsed)
+
 	params := urlParsed.Query()
-	fmt.Println(params)
+
 	validationParams := url.Values{}
 	validationParams.Add("openid.assoc_handle", params.Get("openid.assoc_handle"))
 	validationParams.Add("openid.signed", params.Get("openid.signed"))
@@ -60,7 +59,7 @@ func (cfg *Server) loginSteamCallback(w http.ResponseWriter, r *http.Request) {
 
 	name := profile.Response.Players[0].Personaname
 
-	//_, err := cfg.DB.GetUserbyId(r.Context(), id)
+	_, err = cfg.DB.GetUserbyId(r.Context(), id)
 
 	if err != nil {
 		cfg.DB.CreateUser(r.Context(), database.CreateUserParams{

@@ -19,13 +19,12 @@ func main() {
 
 	c := cron.New()
 
-	c.AddFunc("*1 * * * * *", func() {
+	c.AddFunc("0 0 * */1 * *", func() {
 		fmt.Println("starting job")
-
+		//steamClient.UpdateDB(0)
 	})
 	c.Start()
 
-	//steamClient.UpdateDB(0)
 	server.Start()
 
 }

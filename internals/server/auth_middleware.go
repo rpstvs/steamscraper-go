@@ -30,7 +30,7 @@ func (srv *Server) middlewareAuth(handler authHandler) http.HandlerFunc {
 		user, err := srv.DB.GetUserbyId(r.Context(), steamid)
 
 		if err != nil {
-			fmt.Println("no user")
+			fmt.Println(err)
 		}
 
 		fmt.Println(steamid)

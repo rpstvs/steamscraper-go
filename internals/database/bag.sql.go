@@ -7,13 +7,14 @@ package database
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 const createBag = `-- name: CreateBag :one
-INSERT INTO Bag (Id, TotalValue, User_id)
-VALUES ($1, $2, $3)
+INSERT INTO Bag (Id, TotalValue, User_id, Created_at, Updated_at)
+VALUES ($1, $2, $3, $4, $5)
 RETURNING id, user_id, totalvalue, created_at, updated_at
 `
 
@@ -21,10 +22,18 @@ type CreateBagParams struct {
 	ID         uuid.UUID
 	Totalvalue float64
 	UserID     uuid.UUID
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 func (q *Queries) CreateBag(ctx context.Context, arg CreateBagParams) (Bag, error) {
-	row := q.db.QueryRowContext(ctx, createBag, arg.ID, arg.Totalvalue, arg.UserID)
+	row := q.db.QueryRowContext(ctx, createBag,
+		arg.ID,
+		arg.Totalvalue,
+		arg.UserID,
+		arg.CreatedAt,
+		arg.UpdatedAt,
+	)
 	var i Bag
 	err := row.Scan(
 		&i.ID,
@@ -93,6 +102,7 @@ func (q *Queries) GetBagsByUser(ctx context.Context, userID uuid.UUID) ([]Bag, e
 const updateBag = `-- name: UpdateBag :one
 UPDATE Bag
 SET TotalValue = $2
+    AND Updated_at = $3
 WHERE Id = $1
 RETURNING id, user_id, totalvalue, created_at, updated_at
 `
@@ -100,10 +110,11 @@ RETURNING id, user_id, totalvalue, created_at, updated_at
 type UpdateBagParams struct {
 	ID         uuid.UUID
 	Totalvalue float64
+	UpdatedAt  time.Time
 }
 
 func (q *Queries) UpdateBag(ctx context.Context, arg UpdateBagParams) (Bag, error) {
-	row := q.db.QueryRowContext(ctx, updateBag, arg.ID, arg.Totalvalue)
+	row := q.db.QueryRowContext(ctx, updateBag, arg.ID, arg.Totalvalue, arg.UpdatedAt)
 	var i Bag
 	err := row.Scan(
 		&i.ID,

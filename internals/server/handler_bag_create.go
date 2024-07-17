@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/rpstvs/steamscraper-go/internals/database"
@@ -32,6 +33,8 @@ func (cfg *Server) CreateBag(w http.ResponseWriter, r *http.Request, user databa
 		ID:         bag.ID,
 		Totalvalue: 0.0,
 		UserID:     params.Userid,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
 	})
 
 	if err != nil {

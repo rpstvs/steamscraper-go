@@ -13,9 +13,16 @@ import (
 )
 
 const createBag = `-- name: CreateBag :one
-INSERT INTO Bag (Id, TotalValue, User_id, Created_at, Updated_at)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, user_id, totalvalue, created_at, updated_at
+INSERT INTO Bag (
+        Id,
+        TotalValue,
+        User_id,
+        Created_at,
+        Updated_at,
+        Name
+    )
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING id, user_id, totalvalue, created_at, updated_at, name
 `
 
 type CreateBagParams struct {
@@ -24,6 +31,7 @@ type CreateBagParams struct {
 	UserID     uuid.UUID
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+	Name       string
 }
 
 func (q *Queries) CreateBag(ctx context.Context, arg CreateBagParams) (Bag, error) {
@@ -33,6 +41,7 @@ func (q *Queries) CreateBag(ctx context.Context, arg CreateBagParams) (Bag, erro
 		arg.UserID,
 		arg.CreatedAt,
 		arg.UpdatedAt,
+		arg.Name,
 	)
 	var i Bag
 	err := row.Scan(
@@ -41,12 +50,13 @@ func (q *Queries) CreateBag(ctx context.Context, arg CreateBagParams) (Bag, erro
 		&i.Totalvalue,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Name,
 	)
 	return i, err
 }
 
 const getBagbyID = `-- name: GetBagbyID :one
-SELECT id, user_id, totalvalue, created_at, updated_at
+SELECT id, user_id, totalvalue, created_at, updated_at, name
 FROM Bag
 WHERE Id = $1
 `
@@ -60,12 +70,13 @@ func (q *Queries) GetBagbyID(ctx context.Context, id uuid.UUID) (Bag, error) {
 		&i.Totalvalue,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Name,
 	)
 	return i, err
 }
 
 const getBagsByUser = `-- name: GetBagsByUser :many
-SELECT id, user_id, totalvalue, created_at, updated_at
+SELECT id, user_id, totalvalue, created_at, updated_at, name
 FROM Bag
 Where User_id = $1
 `
@@ -85,6 +96,7 @@ func (q *Queries) GetBagsByUser(ctx context.Context, userID uuid.UUID) ([]Bag, e
 			&i.Totalvalue,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Name,
 		); err != nil {
 			return nil, err
 		}
@@ -104,7 +116,7 @@ UPDATE Bag
 SET TotalValue = $2
     AND Updated_at = $3
 WHERE Id = $1
-RETURNING id, user_id, totalvalue, created_at, updated_at
+RETURNING id, user_id, totalvalue, created_at, updated_at, name
 `
 
 type UpdateBagParams struct {
@@ -122,6 +134,7 @@ func (q *Queries) UpdateBag(ctx context.Context, arg UpdateBagParams) (Bag, erro
 		&i.Totalvalue,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Name,
 	)
 	return i, err
 }

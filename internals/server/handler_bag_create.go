@@ -35,6 +35,7 @@ func (cfg *Server) CreateBag(w http.ResponseWriter, r *http.Request, user databa
 		UserID:     params.Userid,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
+		Name:       params.Name,
 	})
 
 	if err != nil {

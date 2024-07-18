@@ -16,6 +16,7 @@ type Bag struct {
 	Totalvalue float64
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+	Name       string
 }
 
 type BagItem struct {

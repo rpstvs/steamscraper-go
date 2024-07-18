@@ -1,6 +1,13 @@
 -- name: CreateBag :one
-INSERT INTO Bag (Id, TotalValue, User_id, Created_at, Updated_at)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO Bag (
+        Id,
+        TotalValue,
+        User_id,
+        Created_at,
+        Updated_at,
+        Name
+    )
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING *;
 -- name: UpdateBag :one
 UPDATE Bag

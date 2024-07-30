@@ -14,7 +14,7 @@ import (
 const createItem = `-- name: CreateItem :one
 INSERT INTO Items (id, ItemName)
 VALUES ($1, $2)
-RETURNING id, itemname
+RETURNING id, itemname, daychange, weekchange
 `
 
 type CreateItemParams struct {
@@ -25,7 +25,12 @@ type CreateItemParams struct {
 func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, error) {
 	row := q.db.QueryRowContext(ctx, createItem, arg.ID, arg.Itemname)
 	var i Item
-	err := row.Scan(&i.ID, &i.Itemname)
+	err := row.Scan(
+		&i.ID,
+		&i.Itemname,
+		&i.Daychange,
+		&i.Weekchange,
+	)
 	return i, err
 }
 

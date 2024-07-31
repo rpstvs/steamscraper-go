@@ -9,3 +9,6 @@ FROM Items;
 SELECT Id
 FROM Items
 WHERE itemname = $1;
+-- name: UpdateDailyChange :one
+UPDATE Items
+SET

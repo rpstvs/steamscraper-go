@@ -47,6 +47,26 @@ func (q *Queries) AddPrice(ctx context.Context, arg AddPriceParams) ([]Price, er
 	return items, nil
 }
 
+const getItemRecord = `-- name: GetItemRecord :one
+Select Price
+FROM Prices
+WHERE Item_id = $1
+ORDER By PriceDate DESC
+LIMIT $2
+`
+
+type GetItemRecordParams struct {
+	ItemID uuid.UUID
+	Limit  int32
+}
+
+func (q *Queries) GetItemRecord(ctx context.Context, arg GetItemRecordParams) (float64, error) {
+	row := q.db.QueryRowContext(ctx, getItemRecord, arg.ItemID, arg.Limit)
+	var price float64
+	err := row.Scan(&price)
+	return price, err
+}
+
 const getLatestPrice = `-- name: GetLatestPrice :one
 SELECT Price,
     Item_id

@@ -14,3 +14,9 @@ SELECT Price,
 FROM Prices
 WHERE Item_id = $1
 ORDER BY PriceDate DESC;
+-- name: GetItemRecord :one
+Select Price
+FROM Prices
+WHERE Item_id = $1
+ORDER By PriceDate DESC
+LIMIT $2;

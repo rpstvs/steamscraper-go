@@ -14,7 +14,7 @@ SELECT Price,
 FROM Prices
 WHERE Item_id = $1
 ORDER BY PriceDate DESC;
--- name: GetItemRecord :one
+-- name: GetItemRecord :many
 Select Price
 FROM Prices
 WHERE Item_id = $1

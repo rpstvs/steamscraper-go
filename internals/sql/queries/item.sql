@@ -9,6 +9,11 @@ FROM Items;
 SELECT Id
 FROM Items
 WHERE itemname = $1;
--- name: UpdateDailyChange :one
+-- name: UpdateDailyChange :exec
 UPDATE Items
-SET
+SET DayChange = $1
+WHERE Id = $2;
+-- name: UpdateWeeklyChange :exec
+UPDATE Items
+SET WeekChange = $1
+WHERE Id = $2;

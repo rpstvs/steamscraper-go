@@ -74,3 +74,35 @@ func (q *Queries) GetItemsIds(ctx context.Context) ([]uuid.UUID, error) {
 	}
 	return items, nil
 }
+
+const updateDailyChange = `-- name: UpdateDailyChange :exec
+UPDATE Items
+SET DayChange = $1
+WHERE Id = $2
+`
+
+type UpdateDailyChangeParams struct {
+	Daychange float64
+	ID        uuid.UUID
+}
+
+func (q *Queries) UpdateDailyChange(ctx context.Context, arg UpdateDailyChangeParams) error {
+	_, err := q.db.ExecContext(ctx, updateDailyChange, arg.Daychange, arg.ID)
+	return err
+}
+
+const updateWeeklyChange = `-- name: UpdateWeeklyChange :exec
+UPDATE Items
+SET WeekChange = $1
+WHERE Id = $2
+`
+
+type UpdateWeeklyChangeParams struct {
+	Weekchange float64
+	ID         uuid.UUID
+}
+
+func (q *Queries) UpdateWeeklyChange(ctx context.Context, arg UpdateWeeklyChangeParams) error {
+	_, err := q.db.ExecContext(ctx, updateWeeklyChange, arg.Weekchange, arg.ID)
+	return err
+}

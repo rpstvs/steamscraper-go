@@ -47,7 +47,7 @@ func TestSticker(t *testing.T) {
 	for i, c := range cases {
 		t.Run(fmt.Sprintf("Test case %v", i), func(t *testing.T) {
 			actual := ParseSticker(c.input, c.input2)
-			fmt.Println(actual)
+			//fmt.Println(actual)
 			if actual != c.expected {
 				t.Errorf("parsing failed")
 			}
@@ -79,7 +79,7 @@ func TestSkin(t *testing.T) {
 	for i, c := range cases {
 		t.Run(fmt.Sprintf("Test case %v", i), func(t *testing.T) {
 			actual := parseSkin(c.input, c.input2)
-			fmt.Println(actual)
+			//fmt.Println(actual)
 			if actual != c.expected {
 				t.Errorf("parsing failed")
 			}
@@ -108,7 +108,7 @@ func TestPrice(t *testing.T) {
 	for i, c := range cases {
 		t.Run(fmt.Sprintf("Test case %v", i), func(t *testing.T) {
 			actual := PriceConverter(c.input)
-			fmt.Printf("t: %v\n", actual)
+			//fmt.Printf("t: %v\n", actual)
 			if actual != c.expected {
 				t.Errorf("parsing failed")
 			}

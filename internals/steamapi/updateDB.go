@@ -23,6 +23,7 @@ func (cfg *Client) UpdateDB(index int) {
 		fmt.Printf("vou dar update ao item %s \n", result.HashName)
 		cfg.WriteToDB(result.HashName, ctx)
 		cfg.PriceUpdate(result.HashName, result.SellPrice, ctx)
+		cfg.PriceChangeDaily(result.HashName)
 
 	}
 

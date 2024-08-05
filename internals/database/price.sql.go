@@ -83,6 +83,51 @@ func (q *Queries) GetItemRecord(ctx context.Context, arg GetItemRecordParams) ([
 	return items, nil
 }
 
+const getItemsRecord = `-- name: GetItemsRecord :many
+SELECT Itemname,
+    Id,
+    CAST (Prices.Price AS NUMERIC(10, 2))
+FROM Items
+    LEFT JOIN Prices ON Items.Id = Prices.Item_id
+WHERE Itemname = $2
+ORDER BY PriceDate DESC
+Limit $1
+`
+
+type GetItemsRecordParams struct {
+	Limit    int32
+	Itemname string
+}
+
+type GetItemsRecordRow struct {
+	Itemname    string
+	ID          uuid.UUID
+	PricesPrice float64
+}
+
+func (q *Queries) GetItemsRecord(ctx context.Context, arg GetItemsRecordParams) ([]GetItemsRecordRow, error) {
+	rows, err := q.db.QueryContext(ctx, getItemsRecord, arg.Limit, arg.Itemname)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetItemsRecordRow
+	for rows.Next() {
+		var i GetItemsRecordRow
+		if err := rows.Scan(&i.Itemname, &i.ID, &i.PricesPrice); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getLatestPrice = `-- name: GetLatestPrice :one
 SELECT Price,
     Item_id

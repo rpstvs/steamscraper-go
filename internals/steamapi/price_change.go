@@ -9,9 +9,7 @@ import (
 )
 
 func (cfg *Client) PriceChangeDaily(itemname string) {
-	// Pegar nos dois ultimos preços de um item
-	// calculcar a change
-	// escrever a change para o item
+
 	ctx := context.Background()
 	id, _ := cfg.DB.GetItemByName(ctx, itemname)
 
@@ -38,7 +36,6 @@ func (cfg *Client) PriceChangeDaily(itemname string) {
 
 }
 
-/*
 func (cfg *Client) WeeklyPriceChange(itemname string) {
 
 	ctx := context.Background()
@@ -50,11 +47,10 @@ func (cfg *Client) WeeklyPriceChange(itemname string) {
 		Limit:  7,
 	})
 
-	weeklyChage := 3 + 5.0
+	weeklyChage := utils.WeeklyPriceChange(item)
 	cfg.DB.UpdateWeeklyChange(ctx, database.UpdateWeeklyChangeParams{
 		ID:         id,
 		Weekchange: weeklyChage,
 	})
 
 }
-*/

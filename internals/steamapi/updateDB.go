@@ -24,6 +24,7 @@ func (cfg *Client) UpdateDB(index int) {
 		cfg.WriteToDB(result.HashName, ctx)
 		cfg.PriceUpdate(result.HashName, result.SellPrice, ctx)
 		cfg.PriceChangeDaily(result.HashName)
+		cfg.WeeklyPriceChange(result.HashName)
 
 	}
 

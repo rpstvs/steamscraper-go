@@ -11,7 +11,9 @@ func WeeklyPriceChange(prices []float64) float64 {
 
 	var sum float64
 	var average float64
-
+	if len(prices) == 0 {
+		return 0.00
+	}
 	for x := range prices {
 		sum += prices[x]
 	}

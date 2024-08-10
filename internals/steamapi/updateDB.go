@@ -3,6 +3,7 @@ package steamapi
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -24,6 +25,7 @@ func (cfg *Client) UpdateDB(index int) {
 		image := utils.BuildImageURL(result.AssetDescription.IconURL)
 
 		cfg.WriteToDB(result.HashName, image, ctx)
+
 		cfg.PriceUpdate(result.HashName, result.SellPrice, ctx)
 		cfg.PriceChangeDaily(result.HashName)
 		cfg.WeeklyPriceChange(result.HashName)
@@ -41,11 +43,15 @@ func (cfg *Client) UpdateDB(index int) {
 
 func (cfg *Client) WriteToDB(itemName, url string, ctx context.Context) {
 
-	cfg.DB.CreateItem(ctx, database.CreateItemParams{
+	_, err := cfg.DB.CreateItem(ctx, database.CreateItemParams{
 		ID:       uuid.New(),
 		Itemname: itemName,
 		Imageurl: url,
 	})
+
+	if err != nil {
+		log.Println(err)
+	}
 
 }
 

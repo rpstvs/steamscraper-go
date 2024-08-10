@@ -2,7 +2,6 @@ package steamapi
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/rpstvs/steamscraper-go/internals/database"
 	"github.com/rpstvs/steamscraper-go/internals/utils"
@@ -11,7 +10,11 @@ import (
 func (cfg *Client) PriceChangeDaily(itemname string) {
 
 	ctx := context.Background()
-	id, _ := cfg.DB.GetItemByName(ctx, itemname)
+	id, err := cfg.DB.GetItemByName(ctx, itemname)
+
+	if err != nil {
+		return
+	}
 
 	item, _ := cfg.DB.GetItemRecord(ctx, database.GetItemRecordParams{
 		ItemID: id,
@@ -21,13 +24,12 @@ func (cfg *Client) PriceChangeDaily(itemname string) {
 	if len(item) < 2 {
 		cfg.DB.UpdateDailyChange(ctx, database.UpdateDailyChangeParams{
 			ID:        id,
-			Daychange: 0.01,
+			Daychange: 0.00,
 		})
 		return
 	}
 
 	dailyChange := utils.DailyPriceChange(item[0], item[1])
-	fmt.Println(item[1], item[0], dailyChange)
 
 	cfg.DB.UpdateDailyChange(ctx, database.UpdateDailyChangeParams{
 		Daychange: dailyChange,
@@ -40,12 +42,24 @@ func (cfg *Client) WeeklyPriceChange(itemname string) {
 
 	ctx := context.Background()
 
-	id, _ := cfg.DB.GetItemByName(ctx, itemname)
+	id, err := cfg.DB.GetItemByName(ctx, itemname)
 
-	item, _ := cfg.DB.GetItemRecord(ctx, database.GetItemRecordParams{
+	if err != nil {
+		return
+	}
+
+	item, err := cfg.DB.GetItemRecord(ctx, database.GetItemRecordParams{
 		ItemID: id,
 		Limit:  7,
 	})
+
+	if err != nil {
+		cfg.DB.UpdateWeeklyChange(ctx, database.UpdateWeeklyChangeParams{
+			ID:         id,
+			Weekchange: 0.00,
+		})
+		return
+	}
 
 	weeklyChage := utils.WeeklyPriceChange(item)
 	cfg.DB.UpdateWeeklyChange(ctx, database.UpdateWeeklyChangeParams{

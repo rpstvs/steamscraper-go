@@ -19,3 +19,9 @@ func ExtractSteamid(steamid string) string {
 	id := tmp[len(tmp)-1]
 	return id
 }
+
+func BuildImageURL(imageId string) string {
+	tmp := "https://community.akamai.steamstatic.com/economy/image/"
+
+	return tmp + imageId
+}

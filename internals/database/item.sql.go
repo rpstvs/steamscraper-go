@@ -12,25 +12,26 @@ import (
 )
 
 const createItem = `-- name: CreateItem :one
-INSERT INTO Items (id, ItemName)
-VALUES ($1, $2)
-RETURNING id, itemname, daychange, weekchange, image
+INSERT INTO Items (id, ItemName, ImageUrl)
+VALUES ($1, $2, $3)
+RETURNING id, itemname, daychange, weekchange, imageurl
 `
 
 type CreateItemParams struct {
 	ID       uuid.UUID
 	Itemname string
+	Imageurl string
 }
 
 func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, error) {
-	row := q.db.QueryRowContext(ctx, createItem, arg.ID, arg.Itemname)
+	row := q.db.QueryRowContext(ctx, createItem, arg.ID, arg.Itemname, arg.Imageurl)
 	var i Item
 	err := row.Scan(
 		&i.ID,
 		&i.Itemname,
 		&i.Daychange,
 		&i.Weekchange,
-		&i.Image,
+		&i.Imageurl,
 	)
 	return i, err
 }

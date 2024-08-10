@@ -1,6 +1,6 @@
 -- name: CreateItem :one
-INSERT INTO Items (id, ItemName)
-VALUES ($1, $2)
+INSERT INTO Items (id, ItemName, ImageUrl)
+VALUES ($1, $2, $3)
 RETURNING *;
 -- name: GetItemsIds :many
 SELECT Id

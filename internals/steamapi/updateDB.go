@@ -21,7 +21,9 @@ func (cfg *Client) UpdateDB(index int) {
 	ctx := context.Background()
 	for _, result := range resultados.Results {
 		fmt.Printf("vou dar update ao item %s \n", result.HashName)
-		cfg.WriteToDB(result.HashName, ctx)
+		image := utils.BuildImageURL(result.AssetDescription.IconURL)
+
+		cfg.WriteToDB(result.HashName, image, ctx)
 		cfg.PriceUpdate(result.HashName, result.SellPrice, ctx)
 		cfg.PriceChangeDaily(result.HashName)
 		cfg.WeeklyPriceChange(result.HashName)
@@ -37,11 +39,12 @@ func (cfg *Client) UpdateDB(index int) {
 
 }
 
-func (cfg *Client) WriteToDB(itemName string, ctx context.Context) {
+func (cfg *Client) WriteToDB(itemName, url string, ctx context.Context) {
 
 	cfg.DB.CreateItem(ctx, database.CreateItemParams{
 		ID:       uuid.New(),
 		Itemname: itemName,
+		Imageurl: url,
 	})
 
 }

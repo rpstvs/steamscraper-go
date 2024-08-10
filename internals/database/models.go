@@ -30,7 +30,7 @@ type Item struct {
 	Itemname   string
 	Daychange  float64
 	Weekchange float64
-	Image      string
+	Imageurl   string
 }
 
 type Price struct {

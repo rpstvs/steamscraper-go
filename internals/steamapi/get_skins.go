@@ -22,6 +22,7 @@ func (cfg *Client) GetSkins(start int) utils.SearchResult {
 
 	if err != nil {
 		fmt.Printf("error occyrred: %s", err)
+		cfg.GetSkins(start)
 		return utils.SearchResult{}
 	}
 

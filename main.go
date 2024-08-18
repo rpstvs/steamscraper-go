@@ -13,7 +13,7 @@ func main() {
 
 	godotenv.Load(".env")
 
-	steamClient := steamapi.NewClient(10 * time.Second)
+	steamClient := steamapi.NewClient(30 * time.Second)
 
 	server := server.ReturnServer()
 

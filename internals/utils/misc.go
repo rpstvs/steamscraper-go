@@ -25,3 +25,8 @@ func BuildImageURL(imageId string) string {
 
 	return tmp + imageId
 }
+
+func ParsePrice(price string) float64 {
+
+	return 0.00
+}

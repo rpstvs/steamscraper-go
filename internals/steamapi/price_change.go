@@ -2,6 +2,7 @@ package steamapi
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/rpstvs/steamscraper-go/internals/database"
 	"github.com/rpstvs/steamscraper-go/internals/utils"
@@ -35,6 +36,8 @@ func (cfg *Client) PriceChangeDaily(itemname string) {
 		Daychange: dailyChange,
 		ID:        id,
 	})
+
+	fmt.Printf("Item: %s - Price Today: %f - Old Price: %f -  DayChange: %f\n", itemname, item[0], item[1], dailyChange)
 
 }
 

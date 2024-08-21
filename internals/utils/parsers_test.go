@@ -93,15 +93,15 @@ func TestPrice(t *testing.T) {
 
 	cases := []struct {
 		expected float64
-		input    int
+		input    string
 	}{
 		{
 			expected: 0.03,
-			input:    3,
+			input:    "0,03",
 		},
 		{
 			expected: 1,
-			input:    100,
+			input:    "1,--",
 		},
 	}
 

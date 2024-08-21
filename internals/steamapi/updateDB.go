@@ -21,14 +21,15 @@ func (cfg *Client) UpdateDB(index int) {
 
 	ctx := context.Background()
 	for _, result := range resultados.Results {
-		fmt.Printf("vou dar update ao item %s \n", result.HashName)
+
 		image := utils.BuildImageURL(result.AssetDescription.IconURL)
 
 		_, err := cfg.DB.GetItemByName(ctx, result.HashName)
 		if err != nil {
 			cfg.WriteToDB(result.HashName, image, ctx)
 		}
-		cfg.PriceUpdate(result.HashName, result.SellPrice, ctx)
+		fmt.Println(result.SalePriceText)
+		cfg.PriceUpdate(result.HashName, result.SalePriceText, ctx)
 		cfg.PriceChangeDaily(result.HashName)
 		cfg.WeeklyPriceChange(result.HashName)
 
@@ -59,7 +60,7 @@ func (cfg *Client) WriteToDB(itemName, url string, ctx context.Context) {
 
 }
 
-func (cfg *Client) PriceUpdate(itemName string, price int, ctx context.Context) {
+func (cfg *Client) PriceUpdate(itemName string, price string, ctx context.Context) {
 
 	id, err := cfg.DB.GetItemByName(ctx, itemName)
 	priceDb := utils.PriceConverter(price)

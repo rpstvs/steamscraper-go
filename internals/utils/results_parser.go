@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -14,7 +15,7 @@ func ParseResults(results SearchResult) {
 	for _, result := range results.Results {
 		//fmt.Println(result.HashName)
 		name := strings.Split(result.HashName, "|")
-		price := PriceConverter(result.SellPrice)
+		price := PriceConverter(result.SalePriceText)
 
 		if len(name) == 1 {
 			caixa := parseCase(name, price)
@@ -131,9 +132,16 @@ func parseCondition(condition string) []string {
 	return matches
 }
 
-func PriceConverter(priceInt int) float64 {
-	tmp := float64(priceInt)
-	price := float64(tmp / 100.0)
+func PriceConverter(priceStr string) float64 {
+	priceStr = strings.ReplaceAll(priceStr, "$", "")
+	priceStr = strings.ReplaceAll(priceStr, ",", ".")
+	priceStr = strings.ReplaceAll(priceStr, "-", "0")
+
+	price, err := strconv.ParseFloat(priceStr, 64)
+
+	if err != nil {
+		log.Println("error parsing price")
+	}
 
 	return price
 }

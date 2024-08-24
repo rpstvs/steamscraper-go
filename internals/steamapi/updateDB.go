@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,30 +22,34 @@ func (cfg *Client) UpdateDB(index int) {
 
 	ctx := context.Background()
 	for _, result := range resultados.Results {
-
+		id, err := strconv.Atoi(result.AssetDescription.Classid)
+		//fmt.Println(result.AssetDescription.Classid, int64(id))
+		if err != nil {
+			log.Println("couldnt convert id")
+		}
 		image := utils.BuildImageURL(result.AssetDescription.IconURL)
 
-		_, err := cfg.DB.GetItemByName(ctx, result.HashName)
+		_, err = cfg.DB.GetItemByName(ctx, result.HashName)
 		if err != nil {
-			cfg.WriteToDB(result.HashName, image, ctx)
+			cfg.WriteToDB(result.HashName, image, int64(id), ctx)
 		}
-		fmt.Println(result.SalePriceText)
-		cfg.PriceUpdate(result.HashName, result.SalePriceText, ctx)
-		cfg.PriceChangeDaily(result.HashName)
+		fmt.Println(result.SalePriceText, result.HashName)
+		cfg.PriceUpdate(int64(id), result.SalePriceText, ctx)
+		cfg.PriceChangeDaily(result.HashName, int64(id))
 		cfg.WeeklyPriceChange(result.HashName)
 
 	}
 
 	if start < end {
 		start += 100
-		fmt.Printf("Dormir 15s - Next Index %d \n", start)
+		fmt.Printf("Dormir 15s - Next Index %d / %d \n", start, end)
 		time.Sleep(15 * time.Second)
 		cfg.UpdateDB(start)
 	}
 
 }
 
-func (cfg *Client) WriteToDB(itemName, url string, ctx context.Context) {
+func (cfg *Client) WriteToDB(itemName, url string, id int64, ctx context.Context) {
 
 	_, err := cfg.DB.CreateItem(ctx, database.CreateItemParams{
 		ID:         uuid.New(),
@@ -52,6 +57,7 @@ func (cfg *Client) WriteToDB(itemName, url string, ctx context.Context) {
 		Imageurl:   url,
 		Daychange:  0.00,
 		Weekchange: 0.00,
+		Classid:    id,
 	})
 
 	if err != nil {
@@ -60,20 +66,20 @@ func (cfg *Client) WriteToDB(itemName, url string, ctx context.Context) {
 
 }
 
-func (cfg *Client) PriceUpdate(itemName string, price string, ctx context.Context) {
+func (cfg *Client) PriceUpdate(id int64, price string, ctx context.Context) {
 
-	id, err := cfg.DB.GetItemByName(ctx, itemName)
 	priceDb := utils.PriceConverter(price)
-	if err != nil {
-		fmt.Println(err)
-	}
 
 	date := utils.ConvertDate()
 
-	cfg.DB.AddPrice(ctx, database.AddPriceParams{
-		ItemID:    id,
-		Pricedate: date,
-		Price:     priceDb,
+	_, err := cfg.DB.AddPrice(ctx, database.AddPriceParams{
+		ItemClassid: id,
+		Pricedate:   date,
+		Price:       priceDb,
 	})
+
+	if err != nil {
+		log.Println(err)
+	}
 
 }

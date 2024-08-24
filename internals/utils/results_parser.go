@@ -133,6 +133,21 @@ func parseCondition(condition string) []string {
 }
 
 func PriceConverter(priceStr string) float64 {
+	if len(priceStr) > 7 {
+
+		priceStr = strings.ReplaceAll(priceStr, "$", "")
+		priceStr = strings.ReplaceAll(priceStr, ",", "")
+		priceStr = strings.ReplaceAll(priceStr, "-", "0")
+
+		price, err := strconv.ParseFloat(priceStr, 64)
+
+		if err != nil {
+			log.Println("error parsing price")
+		}
+
+		return price
+	}
+
 	priceStr = strings.ReplaceAll(priceStr, "$", "")
 	priceStr = strings.ReplaceAll(priceStr, ",", ".")
 	priceStr = strings.ReplaceAll(priceStr, "-", "0")

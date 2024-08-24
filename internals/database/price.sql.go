@@ -13,19 +13,19 @@ import (
 )
 
 const addPrice = `-- name: AddPrice :many
-INSERT INTO Prices (PriceDate, Item_id, Price)
+INSERT INTO Prices (PriceDate, item_classid, Price)
 VALUES ($1, $2, $3)
-RETURNING pricedate, item_id, price
+RETURNING pricedate, item_id, price, item_classid
 `
 
 type AddPriceParams struct {
-	Pricedate time.Time
-	ItemID    uuid.UUID
-	Price     float64
+	Pricedate   time.Time
+	ItemClassid int64
+	Price       float64
 }
 
 func (q *Queries) AddPrice(ctx context.Context, arg AddPriceParams) ([]Price, error) {
-	rows, err := q.db.QueryContext(ctx, addPrice, arg.Pricedate, arg.ItemID, arg.Price)
+	rows, err := q.db.QueryContext(ctx, addPrice, arg.Pricedate, arg.ItemClassid, arg.Price)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,12 @@ func (q *Queries) AddPrice(ctx context.Context, arg AddPriceParams) ([]Price, er
 	var items []Price
 	for rows.Next() {
 		var i Price
-		if err := rows.Scan(&i.Pricedate, &i.ItemID, &i.Price); err != nil {
+		if err := rows.Scan(
+			&i.Pricedate,
+			&i.ItemID,
+			&i.Price,
+			&i.ItemClassid,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -50,18 +55,18 @@ func (q *Queries) AddPrice(ctx context.Context, arg AddPriceParams) ([]Price, er
 const getItemRecord = `-- name: GetItemRecord :many
 Select Price
 FROM Prices
-WHERE Item_id = $1
+WHERE item_classid = $1
 ORDER By PriceDate DESC
 LIMIT $2
 `
 
 type GetItemRecordParams struct {
-	ItemID uuid.UUID
-	Limit  int32
+	ItemClassid int64
+	Limit       int32
 }
 
 func (q *Queries) GetItemRecord(ctx context.Context, arg GetItemRecordParams) ([]float64, error) {
-	rows, err := q.db.QueryContext(ctx, getItemRecord, arg.ItemID, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, getItemRecord, arg.ItemClassid, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

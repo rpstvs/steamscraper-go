@@ -1,6 +1,13 @@
 -- name: CreateItem :one
-INSERT INTO Items (id, ItemName, ImageUrl, DayChange, WeekChange)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO Items (
+        id,
+        ItemName,
+        ImageUrl,
+        DayChange,
+        WeekChange,
+        classid
+    )
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING *;
 -- name: GetItemsIds :many
 SELECT Id
@@ -12,8 +19,8 @@ WHERE itemname = $1;
 -- name: UpdateDailyChange :exec
 UPDATE Items
 SET DayChange = $1
-WHERE Id = $2;
+WHERE classid = $2;
 -- name: UpdateWeeklyChange :exec
 UPDATE Items
 SET WeekChange = $1
-WHERE Id = $2;
+WHERE classid = $2;

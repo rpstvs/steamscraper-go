@@ -1,5 +1,5 @@
 -- name: AddPrice :many
-INSERT INTO Prices (PriceDate, Item_id, Price)
+INSERT INTO Prices (PriceDate, item_classid, Price)
 VALUES ($1, $2, $3)
 RETURNING *;
 -- name: GetPricebyId :many
@@ -17,7 +17,7 @@ ORDER BY PriceDate DESC;
 -- name: GetItemRecord :many
 Select Price
 FROM Prices
-WHERE Item_id = $1
+WHERE item_classid = $1
 ORDER By PriceDate DESC
 LIMIT $2;
 -- name: GetItemsRecord :many

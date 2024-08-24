@@ -31,12 +31,14 @@ type Item struct {
 	Daychange  float64
 	Weekchange float64
 	Imageurl   string
+	Classid    int64
 }
 
 type Price struct {
-	Pricedate time.Time
-	ItemID    uuid.UUID
-	Price     float64
+	Pricedate   time.Time
+	ItemID      uuid.UUID
+	Price       float64
+	ItemClassid int64
 }
 
 type User struct {

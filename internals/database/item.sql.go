@@ -12,9 +12,16 @@ import (
 )
 
 const createItem = `-- name: CreateItem :one
-INSERT INTO Items (id, ItemName, ImageUrl, DayChange, WeekChange)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, itemname, daychange, weekchange, imageurl
+INSERT INTO Items (
+        id,
+        ItemName,
+        ImageUrl,
+        DayChange,
+        WeekChange,
+        classid
+    )
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING id, itemname, daychange, weekchange, imageurl, classid
 `
 
 type CreateItemParams struct {
@@ -23,6 +30,7 @@ type CreateItemParams struct {
 	Imageurl   string
 	Daychange  float64
 	Weekchange float64
+	Classid    int64
 }
 
 func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, error) {
@@ -32,6 +40,7 @@ func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, e
 		arg.Imageurl,
 		arg.Daychange,
 		arg.Weekchange,
+		arg.Classid,
 	)
 	var i Item
 	err := row.Scan(
@@ -40,6 +49,7 @@ func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, e
 		&i.Daychange,
 		&i.Weekchange,
 		&i.Imageurl,
+		&i.Classid,
 	)
 	return i, err
 }
@@ -88,31 +98,31 @@ func (q *Queries) GetItemsIds(ctx context.Context) ([]uuid.UUID, error) {
 const updateDailyChange = `-- name: UpdateDailyChange :exec
 UPDATE Items
 SET DayChange = $1
-WHERE Id = $2
+WHERE classid = $2
 `
 
 type UpdateDailyChangeParams struct {
 	Daychange float64
-	ID        uuid.UUID
+	Classid   int64
 }
 
 func (q *Queries) UpdateDailyChange(ctx context.Context, arg UpdateDailyChangeParams) error {
-	_, err := q.db.ExecContext(ctx, updateDailyChange, arg.Daychange, arg.ID)
+	_, err := q.db.ExecContext(ctx, updateDailyChange, arg.Daychange, arg.Classid)
 	return err
 }
 
 const updateWeeklyChange = `-- name: UpdateWeeklyChange :exec
 UPDATE Items
 SET WeekChange = $1
-WHERE Id = $2
+WHERE classid = $2
 `
 
 type UpdateWeeklyChangeParams struct {
 	Weekchange float64
-	ID         uuid.UUID
+	Classid    int64
 }
 
 func (q *Queries) UpdateWeeklyChange(ctx context.Context, arg UpdateWeeklyChangeParams) error {
-	_, err := q.db.ExecContext(ctx, updateWeeklyChange, arg.Weekchange, arg.ID)
+	_, err := q.db.ExecContext(ctx, updateWeeklyChange, arg.Weekchange, arg.Classid)
 	return err
 }

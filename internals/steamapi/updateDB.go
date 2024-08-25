@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/google/uuid"
-
 	"github.com/rpstvs/steamscraper-go/internals/database"
 	"github.com/rpstvs/steamscraper-go/internals/utils"
 )
@@ -52,7 +50,6 @@ func (cfg *Client) UpdateDB(index int) {
 func (cfg *Client) WriteToDB(itemName, url string, id int64, ctx context.Context) {
 
 	_, err := cfg.DB.CreateItem(ctx, database.CreateItemParams{
-		ID:         uuid.New(),
 		Itemname:   itemName,
 		Imageurl:   url,
 		Daychange:  0.00,

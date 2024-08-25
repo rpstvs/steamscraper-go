@@ -7,25 +7,21 @@ package database
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
 const createItem = `-- name: CreateItem :one
 INSERT INTO Items (
-        id,
         ItemName,
         ImageUrl,
         DayChange,
         WeekChange,
         classid
     )
-VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING id, itemname, daychange, weekchange, imageurl, classid
+VALUES ($1, $2, $3, $4, $5)
+RETURNING classid, itemname, daychange, weekchange, imageurl
 `
 
 type CreateItemParams struct {
-	ID         uuid.UUID
 	Itemname   string
 	Imageurl   string
 	Daychange  float64
@@ -35,7 +31,6 @@ type CreateItemParams struct {
 
 func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, error) {
 	row := q.db.QueryRowContext(ctx, createItem,
-		arg.ID,
 		arg.Itemname,
 		arg.Imageurl,
 		arg.Daychange,
@@ -44,47 +39,46 @@ func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, e
 	)
 	var i Item
 	err := row.Scan(
-		&i.ID,
+		&i.Classid,
 		&i.Itemname,
 		&i.Daychange,
 		&i.Weekchange,
 		&i.Imageurl,
-		&i.Classid,
 	)
 	return i, err
 }
 
 const getItemByName = `-- name: GetItemByName :one
-SELECT Id
+SELECT classid
 FROM Items
 WHERE itemname = $1
 `
 
-func (q *Queries) GetItemByName(ctx context.Context, itemname string) (uuid.UUID, error) {
+func (q *Queries) GetItemByName(ctx context.Context, itemname string) (int64, error) {
 	row := q.db.QueryRowContext(ctx, getItemByName, itemname)
-	var id uuid.UUID
-	err := row.Scan(&id)
-	return id, err
+	var classid int64
+	err := row.Scan(&classid)
+	return classid, err
 }
 
 const getItemsIds = `-- name: GetItemsIds :many
-SELECT Id
+SELECT classid
 FROM Items
 `
 
-func (q *Queries) GetItemsIds(ctx context.Context) ([]uuid.UUID, error) {
+func (q *Queries) GetItemsIds(ctx context.Context) ([]int64, error) {
 	rows, err := q.db.QueryContext(ctx, getItemsIds)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []uuid.UUID
+	var items []int64
 	for rows.Next() {
-		var id uuid.UUID
-		if err := rows.Scan(&id); err != nil {
+		var classid int64
+		if err := rows.Scan(&classid); err != nil {
 			return nil, err
 		}
-		items = append(items, id)
+		items = append(items, classid)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err

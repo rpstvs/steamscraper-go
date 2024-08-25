@@ -1,15 +1,6 @@
 package server
 
-import (
-	"encoding/json"
-	"fmt"
-	"net/http"
-
-	"github.com/google/uuid"
-	"github.com/rpstvs/steamscraper-go/internals/database"
-	"github.com/rpstvs/steamscraper-go/internals/steamapi"
-)
-
+/*
 type response struct {
 	Bagid      uuid.UUID `json:"bagid"`
 	Totalvalue float64   `json:"totalvalue"`
@@ -102,3 +93,4 @@ func (cfg *Server) AddItemBag(w http.ResponseWriter, r *http.Request, user datab
 	})
 
 }
+*/

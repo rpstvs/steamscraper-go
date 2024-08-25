@@ -1,10 +1,10 @@
 -- +goose Up
 CREATE TABLE Prices (
     PriceDate DATE NOT NULL,
-    Item_id UUID NOT NULL REFERENCES Items(Id),
+    item_classid BIGINT NOT NULL REFERENCES Items(classid),
     Price DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY(Item_id, PriceDate),
-    UNIQUE(Item_id, PriceDate)
+    PRIMARY KEY(item_classid, PriceDate),
+    UNIQUE(PriceDate)
 );
 -- +goose Down
 DROP TABLE Prices;

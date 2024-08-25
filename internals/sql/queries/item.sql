@@ -1,19 +1,18 @@
 -- name: CreateItem :one
 INSERT INTO Items (
-        id,
         ItemName,
         ImageUrl,
         DayChange,
         WeekChange,
         classid
     )
-VALUES ($1, $2, $3, $4, $5, $6)
+VALUES ($1, $2, $3, $4, $5)
 RETURNING *;
 -- name: GetItemsIds :many
-SELECT Id
+SELECT classid
 FROM Items;
 -- name: GetItemByName :one
-SELECT Id
+SELECT classid
 FROM Items
 WHERE itemname = $1;
 -- name: UpdateDailyChange :exec

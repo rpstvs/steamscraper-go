@@ -35,7 +35,7 @@ func (cfg *Client) GetSkins(start int) utils.SearchResult {
 		return utils.SearchResult{}
 	}
 
-	searchResult := &utils.SearchResult{}
+	searchResult := utils.SearchResult{}
 
 	err = json.Unmarshal(dat, &searchResult)
 
@@ -46,5 +46,5 @@ func (cfg *Client) GetSkins(start int) utils.SearchResult {
 	//utils.WriteToFile(*searchResult)
 	//utils.ParseResults(*searchResult)
 
-	return *searchResult
+	return searchResult
 }

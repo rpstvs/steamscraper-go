@@ -1,16 +1,6 @@
 package server
 
-import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"net/http"
-
-	"github.com/google/uuid"
-	"github.com/rpstvs/steamscraper-go/internals/database"
-	"github.com/rpstvs/steamscraper-go/internals/steamapi"
-)
-
+/*
 func (cfg *Server) RemoveItemBag(w http.ResponseWriter, r *http.Request, user database.User) {
 	type parameters struct {
 		SkinName string    `json:"skinName"`
@@ -101,3 +91,4 @@ func (cfg *Server) RemoveItemBag(w http.ResponseWriter, r *http.Request, user da
 	})
 
 }
+*/

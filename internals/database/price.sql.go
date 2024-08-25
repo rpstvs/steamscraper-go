@@ -7,15 +7,14 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 const addPrice = `-- name: AddPrice :many
 INSERT INTO Prices (PriceDate, item_classid, Price)
 VALUES ($1, $2, $3)
-RETURNING pricedate, item_id, price, item_classid
+RETURNING pricedate, item_classid, price
 `
 
 type AddPriceParams struct {
@@ -33,12 +32,7 @@ func (q *Queries) AddPrice(ctx context.Context, arg AddPriceParams) ([]Price, er
 	var items []Price
 	for rows.Next() {
 		var i Price
-		if err := rows.Scan(
-			&i.Pricedate,
-			&i.ItemID,
-			&i.Price,
-			&i.ItemClassid,
-		); err != nil {
+		if err := rows.Scan(&i.Pricedate, &i.ItemClassid, &i.Price); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -90,7 +84,7 @@ func (q *Queries) GetItemRecord(ctx context.Context, arg GetItemRecordParams) ([
 
 const getItemsRecord = `-- name: GetItemsRecord :many
 SELECT Itemname,
-    Id,
+    item_classid,
     CAST (Prices.Price AS NUMERIC(10, 2))
 FROM Items
     LEFT JOIN Prices ON Items.Id = Prices.Item_id
@@ -106,7 +100,7 @@ type GetItemsRecordParams struct {
 
 type GetItemsRecordRow struct {
 	Itemname    string
-	ID          uuid.UUID
+	ItemClassid sql.NullInt64
 	PricesPrice float64
 }
 
@@ -119,7 +113,7 @@ func (q *Queries) GetItemsRecord(ctx context.Context, arg GetItemsRecordParams) 
 	var items []GetItemsRecordRow
 	for rows.Next() {
 		var i GetItemsRecordRow
-		if err := rows.Scan(&i.Itemname, &i.ID, &i.PricesPrice); err != nil {
+		if err := rows.Scan(&i.Itemname, &i.ItemClassid, &i.PricesPrice); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -135,21 +129,21 @@ func (q *Queries) GetItemsRecord(ctx context.Context, arg GetItemsRecordParams) 
 
 const getLatestPrice = `-- name: GetLatestPrice :one
 SELECT Price,
-    Item_id
+    item_classid
 FROM Prices
-WHERE Item_id = $1
+WHERE item_classid = $1
 ORDER BY PriceDate DESC
 `
 
 type GetLatestPriceRow struct {
-	Price  float64
-	ItemID uuid.UUID
+	Price       float64
+	ItemClassid int64
 }
 
-func (q *Queries) GetLatestPrice(ctx context.Context, itemID uuid.UUID) (GetLatestPriceRow, error) {
-	row := q.db.QueryRowContext(ctx, getLatestPrice, itemID)
+func (q *Queries) GetLatestPrice(ctx context.Context, itemClassid int64) (GetLatestPriceRow, error) {
+	row := q.db.QueryRowContext(ctx, getLatestPrice, itemClassid)
 	var i GetLatestPriceRow
-	err := row.Scan(&i.Price, &i.ItemID)
+	err := row.Scan(&i.Price, &i.ItemClassid)
 	return i, err
 }
 
@@ -157,7 +151,7 @@ const getPricebyId = `-- name: GetPricebyId :many
 SELECT Price,
     PriceDate
 FROM Prices
-WHERE Item_id = $1
+WHERE item_classid = $1
 ORDER BY PriceDate DESC
 `
 
@@ -166,8 +160,8 @@ type GetPricebyIdRow struct {
 	Pricedate time.Time
 }
 
-func (q *Queries) GetPricebyId(ctx context.Context, itemID uuid.UUID) ([]GetPricebyIdRow, error) {
-	rows, err := q.db.QueryContext(ctx, getPricebyId, itemID)
+func (q *Queries) GetPricebyId(ctx context.Context, itemClassid int64) ([]GetPricebyIdRow, error) {
+	rows, err := q.db.QueryContext(ctx, getPricebyId, itemClassid)
 	if err != nil {
 		return nil, err
 	}

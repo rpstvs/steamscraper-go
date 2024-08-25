@@ -26,19 +26,17 @@ type BagItem struct {
 }
 
 type Item struct {
-	ID         uuid.UUID
+	Classid    int64
 	Itemname   string
 	Daychange  float64
 	Weekchange float64
 	Imageurl   string
-	Classid    int64
 }
 
 type Price struct {
 	Pricedate   time.Time
-	ItemID      uuid.UUID
-	Price       float64
 	ItemClassid int64
+	Price       float64
 }
 
 type User struct {

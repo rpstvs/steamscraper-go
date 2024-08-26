@@ -20,9 +20,9 @@ type Bag struct {
 }
 
 type BagItem struct {
-	BagID  uuid.UUID
-	ItemID uuid.UUID
-	Amount int32
+	BagID       uuid.UUID
+	ItemClassid int64
+	Amount      int32
 }
 
 type Item struct {

@@ -37,7 +37,7 @@ func (cfg *Client) UpdateDB(index int) {
 
 	if start < end {
 		start += 100
-		fmt.Printf("Dormir 15s - Next Index %d \n", start)
+		fmt.Printf("Dormir 15s - Next Index %d /%d \n", start, end)
 		time.Sleep(15 * time.Second)
 		cfg.UpdateDB(start)
 	}

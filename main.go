@@ -24,7 +24,7 @@ func main() {
 		})
 		c.Start()
 	*/
-	steamClient.UpdateDB(11500)
+	steamClient.UpdateDB(11600)
 	//server.Start()
 
 }

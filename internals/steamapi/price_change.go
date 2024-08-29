@@ -4,18 +4,14 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/rpstvs/steamscraper-go/internals/database"
 	"github.com/rpstvs/steamscraper-go/internals/utils"
 )
 
-func (cfg *Client) PriceChangeDaily(itemname string) {
+func (cfg *Client) PriceChangeDaily(id uuid.UUID, itemname string) {
 
 	ctx := context.Background()
-	id, err := cfg.DB.GetItemByName(ctx, itemname)
-
-	if err != nil {
-		return
-	}
 
 	item, _ := cfg.DB.GetItemRecord(ctx, database.GetItemRecordParams{
 		ItemID: id,
@@ -41,15 +37,9 @@ func (cfg *Client) PriceChangeDaily(itemname string) {
 
 }
 
-func (cfg *Client) WeeklyPriceChange(itemname string) {
+func (cfg *Client) WeeklyPriceChange(id uuid.UUID, itemname string) {
 
 	ctx := context.Background()
-
-	id, err := cfg.DB.GetItemByName(ctx, itemname)
-
-	if err != nil {
-		return
-	}
 
 	item, err := cfg.DB.GetItemRecord(ctx, database.GetItemRecordParams{
 		ItemID: id,

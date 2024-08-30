@@ -2,23 +2,16 @@ package steamapi
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	"github.com/google/uuid"
 	"github.com/rpstvs/steamscraper-go/internals/database"
 	"github.com/rpstvs/steamscraper-go/internals/utils"
 )
 
-func (cfg *Client) PriceChangeDaily(id uuid.UUID, itemname string) {
+func (cfg *Client) PriceChangeDaily(id uuid.UUID, record []float64, itemname string, ctx context.Context) {
 
-	ctx := context.Background()
-
-	item, _ := cfg.DB.GetItemRecord(ctx, database.GetItemRecordParams{
-		ItemID: id,
-		Limit:  2,
-	})
-
-	if len(item) < 2 {
+	if len(record) < 2 {
 		cfg.DB.UpdateDailyChange(ctx, database.UpdateDailyChangeParams{
 			ID:        id,
 			Daychange: 0.00,
@@ -26,27 +19,20 @@ func (cfg *Client) PriceChangeDaily(id uuid.UUID, itemname string) {
 		return
 	}
 
-	dailyChange := utils.DailyPriceChange(item[0], item[1])
+	dailyChange := utils.DailyPriceChange(record[0], record[1])
 
 	cfg.DB.UpdateDailyChange(ctx, database.UpdateDailyChangeParams{
 		Daychange: dailyChange,
 		ID:        id,
 	})
 
-	fmt.Printf("Item: %s - Price Today: %f - Old Price: %f -  DayChange: %f\n", itemname, item[0], item[1], dailyChange)
+	log.Printf("Item: %s - Price Today: %f - Old Price: %f -  DayChange: %f\n", itemname, record[0], record[1], dailyChange)
 
 }
 
-func (cfg *Client) WeeklyPriceChange(id uuid.UUID, itemname string) {
+func (cfg *Client) PriceChange(id uuid.UUID, record []float64, itemname string, ctx context.Context) {
 
-	ctx := context.Background()
-
-	item, err := cfg.DB.GetItemRecord(ctx, database.GetItemRecordParams{
-		ItemID: id,
-		Limit:  7,
-	})
-
-	if err != nil {
+	if len(record) < 7 {
 		cfg.DB.UpdateWeeklyChange(ctx, database.UpdateWeeklyChangeParams{
 			ID:         id,
 			Weekchange: 0.00,
@@ -54,7 +40,7 @@ func (cfg *Client) WeeklyPriceChange(id uuid.UUID, itemname string) {
 		return
 	}
 
-	weeklyChage := utils.WeeklyPriceChange(item)
+	weeklyChage := utils.WeeklyPriceChange(record)
 	cfg.DB.UpdateWeeklyChange(ctx, database.UpdateWeeklyChangeParams{
 		ID:         id,
 		Weekchange: weeklyChage,

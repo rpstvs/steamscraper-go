@@ -30,8 +30,12 @@ func (cfg *Client) UpdateDB(index int) {
 		}
 
 		cfg.PriceUpdate(id, result.HashName, result.SalePriceText, ctx)
-		cfg.PriceChangeDaily(id, result.HashName)
-		cfg.WeeklyPriceChange(id, result.HashName)
+		itemRecord, err := cfg.DB.GetItemRecord(ctx, database.GetItemRecordParams{
+			ItemID: id,
+			Limit:  30,
+		})
+		cfg.PriceChangeDaily(id, itemRecord, result.HashName, ctx)
+		cfg.PriceChange(id, itemRecord, result.HashName, ctx)
 
 	}
 

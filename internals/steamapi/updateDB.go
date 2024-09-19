@@ -30,7 +30,7 @@ func (cfg *Client) UpdateDB(index int) {
 		}
 
 		cfg.PriceUpdate(id, result.HashName, result.SalePriceText, ctx)
-		itemRecord, err := cfg.DB.GetItemRecord(ctx, database.GetItemRecordParams{
+		itemRecord, _ := cfg.DB.GetItemRecord(ctx, database.GetItemRecordParams{
 			ItemID: id,
 			Limit:  30,
 		})

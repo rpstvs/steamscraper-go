@@ -48,14 +48,3 @@ func (srv *Server) Start() {
 	handler := c.Handler(mux)
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
-
-func (srv *Server) RegisterEndpoints() {
-	srv.mux.HandleFunc(".", srv.home)
-	srv.mux.HandleFunc("/v1/api/price", srv.GetLatestPrice)
-	srv.mux.HandleFunc("/v1/api/bag/create", srv.middlewareAuth(srv.CreateBag))
-	srv.mux.HandleFunc("/v1/api/bag/additem", srv.middlewareAuth(srv.AddItemBag))
-	srv.mux.HandleFunc("/v1/api/bag/removeitem", srv.middlewareAuth(srv.RemoveItemBag))
-	srv.mux.HandleFunc("/v1/api/auth/steam", srv.loginSteamCallback)
-	srv.mux.HandleFunc("/v1/api/profile", srv.middlewareAuth(srv.ShowProfile))
-
-}

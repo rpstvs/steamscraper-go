@@ -42,6 +42,5 @@ func (cfg *Server) CreateBag(w http.ResponseWriter, r *http.Request, user databa
 		fmt.Println(err)
 		return
 	}
-
 	RespondWithJson(w, http.StatusOK, bagDb)
 }

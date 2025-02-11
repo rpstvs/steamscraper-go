@@ -13,13 +13,12 @@ type Bag struct {
 }
 
 func CreateBag(name string) Bag {
-	var emptySlice []uuid.UUID
-	totalPrice := 0.0
+
 	newBag := Bag{
 		ID:         uuid.New(),
 		Name:       name,
-		Items:      emptySlice,
-		TotalPrice: totalPrice,
+		Items:      []uuid.UUID{},
+		TotalPrice: 0.0,
 	}
 	return newBag
 

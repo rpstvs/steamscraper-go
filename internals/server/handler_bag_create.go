@@ -18,13 +18,12 @@ func (cfg *Server) CreateBag(w http.ResponseWriter, r *http.Request, user databa
 	}
 
 	decoder := json.NewDecoder(r.Body)
-	params := &parameters{}
+	var params parameters
 
-	err := decoder.Decode(params)
+	err := decoder.Decode(&params)
 
 	if err != nil {
-		fmt.Println("couldn't decode params")
-		return
+		fmt.Println("error decoding body of request")
 	}
 
 	bag := steamapi.CreateBag(params.Name)

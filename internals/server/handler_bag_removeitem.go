@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -39,7 +38,7 @@ func (cfg *Server) RemoveItemBag(w http.ResponseWriter, r *http.Request, user da
 		fmt.Println("couldnt find the skin")
 	}
 
-	itemPrice, err := cfg.DB.GetLatestPrice(context.Background(), id)
+	itemPrice, err := cfg.DB.GetLatestPrice(r.Context(), id)
 
 	if err != nil {
 		fmt.Println("couldnt retrive the latest price")

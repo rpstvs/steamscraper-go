@@ -39,6 +39,7 @@ func (srv *Server) Start() {
 	mux.HandleFunc("/v1/api/bag/additem", srv.middlewareAuth(srv.AddItemBag))
 	mux.HandleFunc("/v1/api/bag/removeitem", srv.middlewareAuth(srv.RemoveItemBag))
 	mux.HandleFunc("/v1/api/auth/steam", srv.loginSteamCallback)
+	mux.HandleFunc("/v1/api/inventoryValue", srv.inventoryValue)
 
 	mux.HandleFunc("/v1/api/profile", srv.middlewareAuth(srv.ShowProfile))
 

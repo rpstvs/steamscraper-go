@@ -29,3 +29,9 @@ FROM Items
 WHERE Itemname = $2
 ORDER BY PriceDate DESC
 Limit $1;
+-- name: GetPrice :one
+SELECT CAST (Prices.Price AS NUMERIC(10, 2))
+FROM Items
+    LEFT JOIN Prices ON Items.Id = Prices.Item_id
+WHERE Itemname = $1
+ORDER BY PriceDate DESC;

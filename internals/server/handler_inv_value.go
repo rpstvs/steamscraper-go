@@ -10,7 +10,7 @@ import (
 
 func (cfg *Server) inventoryValue(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
-		Body string `json:"body"`
+		Steamid string `json:"steamid"`
 	}
 
 	var input parameters
@@ -22,6 +22,12 @@ func (cfg *Server) inventoryValue(w http.ResponseWriter, r *http.Request) {
 		log.Println("couldnt decode steam id")
 	}
 
-	const baseurl = "https://steamcommunity.com/inventory/{user_id}/730/2"
+	//inv := steamapi.GetInventory(input.Steamid)
+	/*
+	   sum := 0
 
+	   	for _, item := range inv.Descriptions {
+	   		lastPrice, err := cfg.DB.GetLatestPrice(r.Context(),)
+	   	}
+	*/
 }

@@ -33,5 +33,6 @@ func GetInventory(steamid string) utils.Inventory {
 		log.Println("Couldnt unmarshal response ")
 		return utils.Inventory{}
 	}
+	log.Println("Request successful, inventory being returned")
 	return inv
 }

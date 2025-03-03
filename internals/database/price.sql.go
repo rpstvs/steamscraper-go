@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 const addPrice = `-- name: AddPrice :many
@@ -34,6 +35,43 @@ func (q *Queries) AddPrice(ctx context.Context, arg AddPriceParams) ([]Price, er
 	for rows.Next() {
 		var i Price
 		if err := rows.Scan(&i.Pricedate, &i.ItemID, &i.Price); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getBatchPrices = `-- name: GetBatchPrices :many
+SELECT Itemname,
+    CAST(Prices.Price AS NUMERIC(10, 2))
+FROM Items
+    LEFT JOIN Prices ON Items.Id = Prices.Item_id
+WHERE Itemname = ANY($1::text [])
+ORDER BY PriceDate DESC
+`
+
+type GetBatchPricesRow struct {
+	Itemname    string
+	PricesPrice float64
+}
+
+func (q *Queries) GetBatchPrices(ctx context.Context, dollar_1 []string) ([]GetBatchPricesRow, error) {
+	rows, err := q.db.QueryContext(ctx, getBatchPrices, pq.Array(dollar_1))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetBatchPricesRow
+	for rows.Next() {
+		var i GetBatchPricesRow
+		if err := rows.Scan(&i.Itemname, &i.PricesPrice); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

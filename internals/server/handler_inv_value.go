@@ -10,8 +10,6 @@ import (
 	"github.com/rpstvs/steamscraper-go/internals/utils"
 )
 
-//get inventory through steamid
-
 func (cfg *Server) inventoryValue(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Steamid string `json:"steamid"`
@@ -28,36 +26,29 @@ func (cfg *Server) inventoryValue(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(input.Steamid)
 
-	var pages []utils.Inventory
+	inv := steamapi.GetInventory(input.Steamid)
 
-	steamapi.GetInventory(input.Steamid, "0", &pages)
+	var itemClassids []string
 
-	var itemNames []string
+	quantity := utils.QuantityMap(inv)
 
-	for _, page := range pages {
-
-		for _, item := range page.Descriptions {
-			itemNames = append(itemNames, item.MarketHashName)
-		}
-
+	for k, _ := range quantity {
+		itemClassids = append(itemClassids, k)
 	}
 
-	resp, err := cfg.DB.GetBatchPrices(r.Context(), itemNames)
+	resp, err := cfg.DB.GetBatchPrices(r.Context(), itemClassids)
 
 	if err != nil {
 		log.Println("Couldnt get the batch of items")
 	}
-
-	itemsMap := make(map[string]float64, len(resp))
-
-	for _, item := range resp {
-		itemsMap[item.Itemname] = item.PricesPrice
-	}
 	var sum float64
-	for _, v := range itemsMap {
-		sum += v
+	totalItems := 0
+	for _, v := range resp {
+		sum += v.PricesPrice * float64(quantity[v.Classid])
+		totalItems += quantity[v.Classid]
+		fmt.Printf("adding item %s with price %f, with amount %d, to the sum: %f\n", v.Itemname, v.PricesPrice, quantity[v.Classid], sum)
 	}
 
-	fmt.Printf("You have %d items and the value is %f.2 \n", len(itemNames), sum)
+	fmt.Printf("the value is %f.2 with the total items %d \n", sum, totalItems)
 
 }

@@ -97,6 +97,14 @@ type SteamProfile struct {
 }
 
 type Inventory struct {
+	Assets []struct {
+		Appid      int    `json:"appid"`
+		Contextid  string `json:"contextid"`
+		Assetid    string `json:"assetid"`
+		Classid    string `json:"classid"`
+		Instanceid string `json:"instanceid"`
+		Amount     string `json:"amount"`
+	} `json:"assets"`
 	Descriptions []struct {
 		Appid           int    `json:"appid"`
 		Classid         string `json:"classid"`
@@ -146,4 +154,9 @@ type Inventory struct {
 	TotalInventoryCount int    `json:"total_inventory_count"`
 	Success             int    `json:"success"`
 	Rwgrsn              int    `json:"rwgrsn"`
+}
+
+type itemInv struct {
+	classid string
+	price   float64
 }

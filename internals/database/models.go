@@ -28,6 +28,7 @@ type BagItem struct {
 type Item struct {
 	ID         uuid.UUID
 	Itemname   string
+	Classid    string
 	Daychange  float64
 	Weekchange float64
 	Imageurl   string

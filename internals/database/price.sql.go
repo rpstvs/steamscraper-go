@@ -50,15 +50,17 @@ func (q *Queries) AddPrice(ctx context.Context, arg AddPriceParams) ([]Price, er
 
 const getBatchPrices = `-- name: GetBatchPrices :many
 SELECT Itemname,
+    Classid,
     CAST(Prices.Price AS NUMERIC(10, 2))
 FROM Items
     LEFT JOIN Prices ON Items.Id = Prices.Item_id
-WHERE Itemname = ANY($1::text [])
+WHERE Classid = ANY($1::text [])
 ORDER BY PriceDate DESC
 `
 
 type GetBatchPricesRow struct {
 	Itemname    string
+	Classid     string
 	PricesPrice float64
 }
 
@@ -71,7 +73,7 @@ func (q *Queries) GetBatchPrices(ctx context.Context, dollar_1 []string) ([]GetB
 	var items []GetBatchPricesRow
 	for rows.Next() {
 		var i GetBatchPricesRow
-		if err := rows.Scan(&i.Itemname, &i.PricesPrice); err != nil {
+		if err := rows.Scan(&i.Itemname, &i.Classid, &i.PricesPrice); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

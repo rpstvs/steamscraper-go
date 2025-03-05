@@ -37,8 +37,9 @@ WHERE Itemname = $1
 ORDER BY PriceDate DESC;
 -- name: GetBatchPrices :many
 SELECT Itemname,
+    Classid,
     CAST(Prices.Price AS NUMERIC(10, 2))
 FROM Items
     LEFT JOIN Prices ON Items.Id = Prices.Item_id
-WHERE Itemname = ANY($1::text [])
+WHERE Classid = ANY($1::text [])
 ORDER BY PriceDate DESC;

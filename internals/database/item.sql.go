@@ -14,7 +14,7 @@ import (
 const createItem = `-- name: CreateItem :one
 INSERT INTO Items (id, ItemName, ImageUrl, DayChange, WeekChange)
 VALUES ($1, $2, $3, $4, $5)
-RETURNING id, itemname, daychange, weekchange, imageurl
+RETURNING id, itemname, classid, daychange, weekchange, imageurl
 `
 
 type CreateItemParams struct {
@@ -37,6 +37,7 @@ func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, e
 	err := row.Scan(
 		&i.ID,
 		&i.Itemname,
+		&i.Classid,
 		&i.Daychange,
 		&i.Weekchange,
 		&i.Imageurl,

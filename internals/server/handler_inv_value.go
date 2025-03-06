@@ -15,6 +15,11 @@ func (cfg *Server) inventoryValue(w http.ResponseWriter, r *http.Request) {
 		Steamid string `json:"steamid"`
 	}
 
+	type response struct {
+		Value float64 `json:"value"`
+		Items int     `json:"items"`
+	}
+
 	var input parameters
 	decoder := json.NewDecoder(r.Body)
 
@@ -49,6 +54,9 @@ func (cfg *Server) inventoryValue(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("adding item %s with price %f, with amount %d, to the sum: %f\n", v.Itemname, v.PricesPrice, quantity[v.Classid], sum)
 	}
 
-	fmt.Printf("the value is %f.2 with the total items %d \n", sum, totalItems)
+	RespondWithJson(w, 200, response{
+		Value: sum,
+		Items: totalItems,
+	})
 
 }
